@@ -53,7 +53,7 @@ final class RetryEngine {
         sleepDurationProvider.apply(new SleepDurationEvent<>(tryCount, outcome, context));
       onRetry.accept(new OnRetryEvent<>(outcome, sleepDuration, tryCount, context));
       if (sleepDuration.isPositive()) {
-        sleeper.sleep(sleepDuration.toMillis());
+        sleeper.sleep(sleepDuration);
       }
     }
   }
