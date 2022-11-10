@@ -70,9 +70,10 @@ public class PolicyWrapContextAndKeyTest {
   public void shouldRestorePolicyKeyOfOuterPolicyToExecutionContextAsMoveOutwardsThroughPolicyWrap() throws Throwable {
     final var actualFallbackPolicyWrapKey = new AtomicReference<String>();
     final var actualFallbackPolicyKey = new AtomicReference<String>();
-    final var fallback = FallbackPolicy.builder(Result.UNDEFINED)
+    final var fallback = FallbackPolicy.<Result>builder()
       .policyKey("FallbackPolicy")
       .handle(Exception.class)
+      .fallback(Result.UNDEFINED)
       .onFallback((outcome, ctx) -> {
         actualFallbackPolicyWrapKey.set(ctx.getPolicyWrapKey().orElse(null));
         actualFallbackPolicyKey.set(ctx.getPolicyKey().orElse(null));
@@ -121,9 +122,10 @@ public class PolicyWrapContextAndKeyTest {
       .durationOfBreak(Duration.ZERO)
       .onBreak(event -> actualPolicyWrapKey.set(event.context().getPolicyWrapKey().orElse(null)))
       .build();
-    final var fallback = FallbackPolicy.builder(Result.SUBSTITUTE)
+    final var fallback = FallbackPolicy.<Result>builder()
       .policyKey(fallbackKey)
       .handleResult(Result.FAULT)
+      .fallback(Result.SUBSTITUTE)
       .build();
     final var innerWrap = PolicyWrap.wrap(innerWrapKey, retry, breaker);
     final var outerWrap = PolicyWrap.wrap(outerWrapKey, fallback, innerWrap);

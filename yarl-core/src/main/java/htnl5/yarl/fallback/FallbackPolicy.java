@@ -14,17 +14,12 @@ public final class FallbackPolicy<R> extends Policy<R, FallbackPolicyBuilder<R>>
 
   FallbackPolicy(final FallbackPolicyBuilder<R> policyBuilder) {
     super(policyBuilder);
-    this.fallbackAction = policyBuilder.getFallbackAction();
+    this.fallbackAction = policyBuilder.getFallback();
     this.onFallback = policyBuilder.getOnFallback();
   }
 
-  public static <R> FallbackPolicyBuilder<R> builder(final BiFunction<DelegateResult<? extends R>, Context,
-    ? extends R> fallbackAction) {
-    return new FallbackPolicyBuilder<>(fallbackAction);
-  }
-
-  public static <R> FallbackPolicyBuilder<R> builder(final R fallbackValue) {
-    return new FallbackPolicyBuilder<>(fallbackValue);
+  public static <R> FallbackPolicyBuilder<R> builder() {
+    return new FallbackPolicyBuilder<>();
   }
 
   @Override

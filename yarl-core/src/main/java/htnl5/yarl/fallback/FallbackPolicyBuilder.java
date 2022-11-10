@@ -9,22 +9,24 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 
 public final class FallbackPolicyBuilder<R> extends PolicyBuilder<R, FallbackPolicyBuilder<R>> {
-  private final BiFunction<DelegateResult<? extends R>, Context, ? extends R> fallbackAction;
+  private BiFunction<DelegateResult<? extends R>, Context, ? extends R> fallback = (outcome, ctx) -> null;
 
   private BiConsumer<DelegateResult<? extends R>, Context> onFallback = (outcome, ctx) -> {
   };
 
-  public FallbackPolicyBuilder(final BiFunction<DelegateResult<? extends R>, Context, ? extends R> fallbackAction) {
-    Objects.requireNonNull(fallbackAction, "fallbackAction must not be null.");
-    this.fallbackAction = fallbackAction;
+  BiFunction<DelegateResult<? extends R>, Context, ? extends R> getFallback() {
+    return fallback;
   }
 
-  public FallbackPolicyBuilder(final R fallbackValue) {
-    this.fallbackAction = (outcome, ctx) -> fallbackValue;
+  public FallbackPolicyBuilder<R> fallback(final BiFunction<DelegateResult<? extends R>, Context, ? extends R> fallback) {
+    Objects.requireNonNull(fallback, "fallback must not be null.");
+    this.fallback = fallback;
+    return self();
   }
 
-  BiFunction<DelegateResult<? extends R>, Context, ? extends R> getFallbackAction() {
-    return fallbackAction;
+  public FallbackPolicyBuilder<R> fallback(final R fallback) {
+    this.fallback = (outcome, ctx) -> fallback;
+    return self();
   }
 
   BiConsumer<DelegateResult<? extends R>, Context> getOnFallback() {
