@@ -95,14 +95,16 @@ public class PolicyWrapGetPoliciesTest {
 
   @Test
   public void getPoliciesShouldReturnPoliciesOfTheTypeMatchingPredicate() {
-    final var policyA = CircuitBreakerPolicy.<Void>builder(1, Duration.ZERO)
+    final var policyA = CircuitBreakerPolicy.<Void>builder()
       .handle(Exception.class)
+      .durationOfBreak(Duration.ZERO)
       .build();
     final var policyB = RetryPolicy.<Void>builder()
       .handle(Exception.class)
       .build();
-    final var policyC = CircuitBreakerPolicy.<Void>builder(1, Duration.ZERO)
+    final var policyC = CircuitBreakerPolicy.<Void>builder()
       .handle(Exception.class)
+      .durationOfBreak(Duration.ZERO)
       .build();
     policyA.isolate();
     final var policyWrap = PolicyWrap.wrap(policyA, policyB, policyC);
@@ -115,14 +117,16 @@ public class PolicyWrapGetPoliciesTest {
 
   @Test
   public void getPoliciesShouldReturnEmptyListIfNoneMatchPredicate() {
-    final var policyA = CircuitBreakerPolicy.<Void>builder(1, Duration.ZERO)
+    final var policyA = CircuitBreakerPolicy.<Void>builder()
       .handle(Exception.class)
+      .durationOfBreak(Duration.ZERO)
       .build();
     final var policyB = RetryPolicy.<Void>builder()
       .handle(Exception.class)
       .build();
-    final var policyC = CircuitBreakerPolicy.<Void>builder(1, Duration.ZERO)
+    final var policyC = CircuitBreakerPolicy.<Void>builder()
       .handle(Exception.class)
+      .durationOfBreak(Duration.ZERO)
       .build();
     final var policyWrap = PolicyWrap.wrap(policyA, policyB, policyC);
 
@@ -226,14 +230,16 @@ public class PolicyWrapGetPoliciesTest {
 
   @Test
   public void getPolicyShouldReturnSinglePolicyOfTheTypeMatchingPredicate() {
-    final var policyA = CircuitBreakerPolicy.<Void>builder(1, Duration.ZERO)
+    final var policyA = CircuitBreakerPolicy.<Void>builder()
       .handle(Exception.class)
+      .durationOfBreak(Duration.ZERO)
       .build();
     final var policyB = RetryPolicy.<Void>builder()
       .handle(Exception.class)
       .build();
-    final var policyC = CircuitBreakerPolicy.<Void>builder(1, Duration.ZERO)
+    final var policyC = CircuitBreakerPolicy.<Void>builder()
       .handle(Exception.class)
+      .durationOfBreak(Duration.ZERO)
       .build();
     policyA.isolate();
     final var policyWrap = PolicyWrap.wrap(policyA, policyB, policyC);
@@ -246,14 +252,16 @@ public class PolicyWrapGetPoliciesTest {
 
   @Test
   public void getPolicyShouldReturnEmptyOptionalIfNoneMatchPredicate() {
-    final var policyA = CircuitBreakerPolicy.<Void>builder(1, Duration.ZERO)
+    final var policyA = CircuitBreakerPolicy.<Void>builder()
       .handle(Exception.class)
+      .durationOfBreak(Duration.ZERO)
       .build();
     final var policyB = RetryPolicy.<Void>builder()
       .handle(Exception.class)
       .build();
-    final var policyC = CircuitBreakerPolicy.<Void>builder(1, Duration.ZERO)
+    final var policyC = CircuitBreakerPolicy.<Void>builder()
       .handle(Exception.class)
+      .durationOfBreak(Duration.ZERO)
       .build();
     final var policyWrap = PolicyWrap.wrap(policyA, policyB, policyC);
 

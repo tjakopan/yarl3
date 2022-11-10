@@ -5,7 +5,6 @@ import htnl5.yarl.DelegateResult;
 import htnl5.yarl.Policy;
 import htnl5.yarl.functions.CheckedFunction;
 
-import java.time.Duration;
 import java.util.Optional;
 
 public final class CircuitBreakerPolicy<R> extends Policy<R, CircuitBreakerPolicyBuilder<R>>
@@ -18,9 +17,8 @@ public final class CircuitBreakerPolicy<R> extends Policy<R, CircuitBreakerPolic
     this.controller = controller;
   }
 
-  public static <R> CircuitBreakerPolicyBuilder<R> builder(final int exceptionsAllowedBeforeBreaking,
-                                                           final Duration durationOfBreak) {
-    return new CircuitBreakerPolicyBuilder<>(exceptionsAllowedBeforeBreaking, durationOfBreak);
+  public static <R> CircuitBreakerPolicyBuilder<R> builder() {
+    return new CircuitBreakerPolicyBuilder<>();
   }
 
   public CircuitBreakerState getState() {

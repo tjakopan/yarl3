@@ -10,8 +10,8 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 public final class CircuitBreakerPolicyBuilder<R> extends PolicyBuilder<R, CircuitBreakerPolicyBuilder<R>> {
-  private final int exceptionsAllowedBeforeBreaking;
-  private final Duration durationOfBreak;
+  private int exceptionsAllowedBeforeBreaking = 1;
+  private Duration durationOfBreak = Duration.ofMinutes(1);
 
   private Clock clock = Clock.systemUTC();
 
@@ -24,22 +24,27 @@ public final class CircuitBreakerPolicyBuilder<R> extends PolicyBuilder<R, Circu
   private Runnable onHalfOpen = () -> {
   };
 
-  public CircuitBreakerPolicyBuilder(final int exceptionsAllowedBeforeBreaking, final Duration durationOfBreak) {
-    if (exceptionsAllowedBeforeBreaking <= 0)
-      throw new IllegalArgumentException("exceptionsAllowedBeforeBreaking must be greater than zero.");
-    Objects.requireNonNull(durationOfBreak, "durationOfBreak must not be null.");
-    if (durationOfBreak.isNegative())
-      throw new IllegalArgumentException("durationOfBreak must be greater than or equal to zero.");
-    this.exceptionsAllowedBeforeBreaking = exceptionsAllowedBeforeBreaking;
-    this.durationOfBreak = durationOfBreak;
-  }
-
   int getExceptionsAllowedBeforeBreaking() {
     return exceptionsAllowedBeforeBreaking;
   }
 
+  public CircuitBreakerPolicyBuilder<R> exceptionsAllowedBeforeBreaking(final int exceptionsAllowedBeforeBreaking) {
+    if (exceptionsAllowedBeforeBreaking <= 0)
+      throw new IllegalArgumentException("exceptionsAllowedBeforeBreaking must be greater than zero.");
+    this.exceptionsAllowedBeforeBreaking = exceptionsAllowedBeforeBreaking;
+    return self();
+  }
+
   Duration getDurationOfBreak() {
     return durationOfBreak;
+  }
+
+  public CircuitBreakerPolicyBuilder<R> durationOfBreak(final Duration durationOfBreak) {
+    Objects.requireNonNull(durationOfBreak, "durationOfBreak must not be null.");
+    if (durationOfBreak.isNegative())
+      throw new IllegalArgumentException("durationOfBreak must be greater than or equal to zero.");
+    this.durationOfBreak = durationOfBreak;
+    return self();
   }
 
   Clock getClock() {

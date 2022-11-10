@@ -123,9 +123,9 @@ public class PolicyWrapTest {
       .handle(Exception.class)
       .maxRetryCount(1)
       .build();
-    final var breaker = CircuitBreakerPolicy
-      .<Integer>builder(1, Duration.ofSeconds(10))
+    final var breaker = CircuitBreakerPolicy.<Integer>builder()
       .handle(Exception.class)
+      .durationOfBreak(Duration.ofSeconds(10))
       .build();
 
     //noinspection unchecked
@@ -140,9 +140,10 @@ public class PolicyWrapTest {
       .handle(Exception.class)
       .maxRetryCount(1)
       .build();
-    final var breaker = CircuitBreakerPolicy
-      .<Void>builder(2, Duration.ofMillis(Long.MAX_VALUE))
+    final var breaker = CircuitBreakerPolicy.<Void>builder()
       .handle(Exception.class)
+      .exceptionsAllowedBeforeBreaking(2)
+      .durationOfBreak(Duration.ofMillis(Long.MAX_VALUE))
       .build();
     final var retryWrappingBreaker = PolicyWrap.wrap(retry, breaker);
     final var breakerWrappingRetry = PolicyWrap.wrap(breaker, retry);
@@ -172,9 +173,10 @@ public class PolicyWrapTest {
       .handleResult(Result.FAULT)
       .maxRetryCount(1)
       .build();
-    final var breaker = CircuitBreakerPolicy
-      .<Result>builder(2, Duration.ofMillis(Long.MAX_VALUE))
+    final var breaker = CircuitBreakerPolicy.<Result>builder()
       .handleResult(Result.FAULT)
+      .exceptionsAllowedBeforeBreaking(2)
+      .durationOfBreak(Duration.ofMillis(Long.MAX_VALUE))
       .build();
     final var retryWrappingBreaker = PolicyWrap.wrap(retry, breaker);
     final var breakerWrappingRetry = PolicyWrap.wrap(breaker, retry);
@@ -200,13 +202,13 @@ public class PolicyWrapTest {
   //<editor-fold desc="executeAndCapture tests">
   @Test
   public void outermostPolicyHandlingExceptionShouldReportAsPolicyWrapHandledException() {
-    final var outerHandlingNPE = CircuitBreakerPolicy
-      .<Void>builder(1, Duration.ZERO)
+    final var outerHandlingNPE = CircuitBreakerPolicy.<Void>builder()
       .handle(NullPointerException.class)
+      .durationOfBreak(Duration.ZERO)
       .build();
-    final var innerHandlingAE = CircuitBreakerPolicy
-      .<Void>builder(1, Duration.ZERO)
+    final var innerHandlingAE = CircuitBreakerPolicy.<Void>builder()
       .handle(ArithmeticException.class)
+      .durationOfBreak(Duration.ZERO)
       .build();
     final var wrap = PolicyWrap.wrap(outerHandlingNPE, innerHandlingAE);
 
@@ -222,13 +224,13 @@ public class PolicyWrapTest {
 
   @Test
   public void outermostPolicyNotHandlingExceptionEvenIfInnerPoliciesDoShouldReportAsUnhandledException() {
-    final var outerHandlingNPE = CircuitBreakerPolicy
-      .<Void>builder(1, Duration.ZERO)
+    final var outerHandlingNPE = CircuitBreakerPolicy.<Void>builder()
       .handle(NullPointerException.class)
+      .durationOfBreak(Duration.ZERO)
       .build();
-    final var innerHandlingAE = CircuitBreakerPolicy
-      .<Void>builder(1, Duration.ZERO)
+    final var innerHandlingAE = CircuitBreakerPolicy.<Void>builder()
       .handle(ArithmeticException.class)
+      .durationOfBreak(Duration.ZERO)
       .build();
     final var wrap = PolicyWrap.wrap(outerHandlingNPE, innerHandlingAE);
 
@@ -244,13 +246,13 @@ public class PolicyWrapTest {
 
   @Test
   public void outermostPolicyHandlingResultShouldReportAsPolicyWrapHandledResult() {
-    final var outerHandlingFault = CircuitBreakerPolicy
-      .<Result>builder(1, Duration.ZERO)
+    final var outerHandlingFault = CircuitBreakerPolicy.<Result>builder()
       .handleResult(Result.FAULT)
+      .durationOfBreak(Duration.ZERO)
       .build();
-    final var innerHandlingFaultAgain = CircuitBreakerPolicy
-      .<Result>builder(1, Duration.ZERO)
+    final var innerHandlingFaultAgain = CircuitBreakerPolicy.<Result>builder()
       .handleResult(Result.FAULT_AGAIN)
+      .durationOfBreak(Duration.ZERO)
       .build();
     final var wrap = PolicyWrap.wrap(outerHandlingFault, innerHandlingFaultAgain);
 
@@ -263,13 +265,13 @@ public class PolicyWrapTest {
 
   @Test
   public void outermostPolicyNotHandlingResultEvenIfInnerPoliciesDoShouldNotReportAsHandled() {
-    final var outerHandlingFault = CircuitBreakerPolicy
-      .<Result>builder(1, Duration.ZERO)
+    final var outerHandlingFault = CircuitBreakerPolicy.<Result>builder()
       .handleResult(Result.FAULT)
+      .durationOfBreak(Duration.ZERO)
       .build();
-    final var innerHandlingFaultAgain = CircuitBreakerPolicy
-      .<Result>builder(1, Duration.ZERO)
+    final var innerHandlingFaultAgain = CircuitBreakerPolicy.<Result>builder()
       .handleResult(Result.FAULT_AGAIN)
+      .durationOfBreak(Duration.ZERO)
       .build();
     final var wrap = PolicyWrap.wrap(outerHandlingFault, innerHandlingFaultAgain);
 

@@ -26,10 +26,10 @@ public class PolicyWrapContextAndKeyTest {
       .maxRetryCount(1)
       .onRetry(event -> policyWrapKeySetOnContext.set(event.context().getPolicyWrapKey().orElse(null)))
       .build();
-    final var breaker = CircuitBreakerPolicy
-      .<Result>builder(1, Duration.ZERO)
+    final var breaker = CircuitBreakerPolicy.<Result>builder()
       .policyKey(breakerKey)
       .handleResult(Result.FAULT)
+      .durationOfBreak(Duration.ZERO)
       .build();
     final var wrap = PolicyWrap.wrap(wrapKey, retry, breaker);
 
@@ -51,10 +51,10 @@ public class PolicyWrapContextAndKeyTest {
       .handleResult(Result.FAULT)
       .maxRetryCount(1)
       .build();
-    final var breaker = CircuitBreakerPolicy
-      .<Result>builder(1, Duration.ZERO)
+    final var breaker = CircuitBreakerPolicy.<Result>builder()
       .policyKey(breakerKey)
       .handleResult(Result.FAULT)
+      .durationOfBreak(Duration.ZERO)
       .onBreak(event -> policyWrapKeySetOnContext.set(event.context().getPolicyWrapKey().orElse(null)))
       .build();
     final var wrap = PolicyWrap.wrap(wrapKey, retry, breaker);
@@ -115,10 +115,10 @@ public class PolicyWrapContextAndKeyTest {
       .handleResult(Result.FAULT)
       .maxRetryCount(1)
       .build();
-    final var breaker = CircuitBreakerPolicy
-      .<Result>builder(1, Duration.ZERO)
+    final var breaker = CircuitBreakerPolicy.<Result>builder()
       .policyKey(breakerKey)
       .handleResult(Result.FAULT)
+      .durationOfBreak(Duration.ZERO)
       .onBreak(event -> actualPolicyWrapKey.set(event.context().getPolicyWrapKey().orElse(null)))
       .build();
     final var fallback = FallbackPolicy.builder(Result.SUBSTITUTE)
