@@ -15,8 +15,26 @@ public final class PolicyWrap<R> extends Policy<R, PolicyWrapBuilder<R>> impleme
     this.inner = inner;
   }
 
-  public static <R> PolicyWrapBuilder<R> builder() {
-    return new PolicyWrapBuilder<>();
+  public static <R> PolicyWrap<R> wrap(final ISyncPolicy<R> outer, final ISyncPolicy<R> inner) {
+    return new PolicyWrapBuilder<R>().wrap(outer, inner);
+  }
+
+  public static <R> PolicyWrap<R> wrap(final String policyKey, final ISyncPolicy<R> outer, final ISyncPolicy<R> inner) {
+    return new PolicyWrapBuilder<R>()
+      .policyKey(policyKey)
+      .wrap(outer, inner);
+  }
+
+  @SafeVarargs
+  public static <R> PolicyWrap<R> wrap(final ISyncPolicy<R>... policies) {
+    return new PolicyWrapBuilder<R>().wrap(policies);
+  }
+
+  @SafeVarargs
+  public static <R> PolicyWrap<R> wrap(final String policyKey, final ISyncPolicy<R>... policies) {
+    return new PolicyWrapBuilder<R>()
+      .policyKey(policyKey)
+      .wrap(policies);
   }
 
   @Override

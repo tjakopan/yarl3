@@ -2,62 +2,63 @@ package htnl5.yarl.wrap;
 
 import htnl5.yarl.IPolicy;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 public interface IPolicyWrap extends IPolicy {
   IPolicy getOuter();
 
   IPolicy getInner();
 
-  default Iterable<IPolicy> getAllPolicies() {
+  default List<IPolicy> getAllPolicies() {
     final var policies = new ArrayList<IPolicy>();
     final var childPolicies = List.of(getOuter(), getInner());
     for (final IPolicy childPolicy : childPolicies) {
       if (childPolicy instanceof IPolicyWrap wrap) {
-        for (final IPolicy policy : wrap.getAllPolicies()) {
-          policies.add(policy);
-        }
+        policies.addAll(wrap.getAllPolicies());
       } else {
         policies.add(childPolicy);
       }
     }
-    return policies;
+    return Collections.unmodifiableList(policies);
   }
 
-  default Iterable<IPolicy> getPolicies(final Class<? extends IPolicy> policyClass) {
-    return getAllPoliciesStream()
+  default List<IPolicy> getPolicies(final Class<? extends IPolicy> policyClass) {
+    Objects.requireNonNull(policyClass, "policyClass must not be null.");
+    return getAllPolicies().stream()
       .filter(policyClass::isInstance)
       .toList();
   }
 
-  default <P extends IPolicy> Iterable<IPolicy> getPolicies(final Class<? extends P> policyClass,
-                                                            final Predicate<? super P> predicate) {
+  default <P extends IPolicy> List<IPolicy> getPolicies(final Class<? extends P> policyClass,
+                                                        final Predicate<? super P> predicate) {
+    Objects.requireNonNull(policyClass, "policyClass must not be null.");
+    Objects.requireNonNull(predicate, "predicate must not be null.");
     //noinspection unchecked
-    return getAllPoliciesStream()
+    return getAllPolicies().stream()
       .filter(p -> policyClass.isInstance(p) && predicate.test((P) p))
       .toList();
   }
 
   default Optional<IPolicy> getPolicy(final Class<? extends IPolicy> policyClass) {
-    return getAllPoliciesStream()
+    Objects.requireNonNull(policyClass, "policyClass must not be null.");
+    return getAllPolicies().stream()
       .filter(policyClass::isInstance)
-      .findFirst();
+      .reduce((a, b) -> {
+        throw new IllegalStateException("Policies contain multiple policies of class %s.".formatted(policyClass.getSimpleName()));
+      });
   }
 
-  default <P extends IPolicy> Optional<IPolicy> getPolicy(final Class<? extends IPolicy> policyClass,
+  default <P extends IPolicy> Optional<IPolicy> getPolicy(final Class<? extends P> policyClass,
                                                           final Predicate<? super P> predicate) {
+    Objects.requireNonNull(policyClass, "policyClass must not be null.");
+    Objects.requireNonNull(predicate, "predicate must not be null.");
     //noinspection unchecked
-    return getAllPoliciesStream()
+    return getAllPolicies().stream()
       .filter(p -> policyClass.isInstance(p) && predicate.test((P) p))
-      .findFirst();
-  }
-
-  private Stream<IPolicy> getAllPoliciesStream() {
-    return StreamSupport.stream(getAllPolicies().spliterator(), false);
+      .reduce((a, b) -> {
+        throw new IllegalStateException(("Policies contain multiple policies of class %s that fulfill the " +
+          "predicate").formatted(policyClass.getSimpleName()));
+      });
   }
 }

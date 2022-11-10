@@ -9,8 +9,14 @@ public final class NoOpPolicy<R> extends Policy<R, NoOpPolicyBuilder<R>> impleme
     super(policyBuilder);
   }
 
-  public static <R> NoOpPolicyBuilder<R> builder() {
-    return new NoOpPolicyBuilder<>();
+  public static <R> NoOpPolicy<R> build() {
+    return new NoOpPolicyBuilder<R>().build();
+  }
+
+  public static <R> NoOpPolicy<R> build(final String policyKey) {
+    return new NoOpPolicyBuilder<R>()
+      .policyKey(policyKey)
+      .build();
   }
 
   @Override

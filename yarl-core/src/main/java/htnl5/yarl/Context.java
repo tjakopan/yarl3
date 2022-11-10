@@ -26,7 +26,7 @@ public final class Context implements Map<String, Object> {
     this(null, contextData);
   }
 
-  static Context none() {
+  public static Context none() {
     return new Context();
   }
 
@@ -95,6 +95,7 @@ public final class Context implements Map<String, Object> {
 
   @Override
   public void putAll(final Map<? extends String, ?> m) {
+    Objects.requireNonNull(m);
     contextData.putAll(m);
   }
 

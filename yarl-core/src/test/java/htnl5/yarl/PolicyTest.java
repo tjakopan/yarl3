@@ -124,8 +124,7 @@ public class PolicyTest {
     final var operationKey = "SomeKey";
     final var executionContext = new Context(operationKey);
     final var capturedContext = new AtomicReference<Context>();
-    final var policy = NoOpPolicy.<Result>builder()
-      .build();
+    final var policy = NoOpPolicy.<Result>build();
 
     policy.execute(executionContext, ctx -> {
       capturedContext.set(ctx);
@@ -165,8 +164,7 @@ public class PolicyTest {
     final var operationKey = "SomeKey";
     final var executionContext = new Context(operationKey);
     final var capturedContext = new AtomicReference<Context>();
-    final var policy = NoOpPolicy.<Result>builder()
-      .build();
+    final var policy = NoOpPolicy.<Result>build();
 
     policy.executeAndCapture(executionContext, ctx -> {
       capturedContext.set(ctx);
@@ -180,8 +178,7 @@ public class PolicyTest {
   public void executingAndCapturingThePolicyActionShouldPassContextToPolicyResult() {
     final var operationKey = "SomeKey";
     final var executionContext = new Context(operationKey);
-    final var policy = NoOpPolicy.<Result>builder()
-      .build();
+    final var policy = NoOpPolicy.<Result>build();
 
     final var policyResult = policy.executeAndCapture(executionContext, ctx -> Result.GOOD);
 
