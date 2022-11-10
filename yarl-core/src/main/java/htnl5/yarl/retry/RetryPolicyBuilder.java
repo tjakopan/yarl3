@@ -1,20 +1,22 @@
 package htnl5.yarl.retry;
 
+import htnl5.yarl.EventListener;
+
 import java.util.Objects;
 
 public final class RetryPolicyBuilder<R> extends RetryPolicyBuilderBase<R, RetryPolicyBuilder<R>> {
-  private OnRetryListener<R> onRetry = event -> {
+  private EventListener<RetryEvent<? extends R>> onRetry = event -> {
   };
   private Sleeper sleeper = new Sleeper() {
   };
 
-  OnRetryListener<R> getOnRetry() {
+  EventListener<RetryEvent<? extends R>> getOnRetry() {
     return onRetry;
   }
 
-  public RetryPolicyBuilder<R> onRetry(final OnRetryListener<? super R> onRetry) {
+  public RetryPolicyBuilder<R> onRetry(final EventListener<RetryEvent<? extends R>> onRetry) {
     Objects.requireNonNull(onRetry, "onRetry must not be null.");
-    this.onRetry = onRetry::accept;
+    this.onRetry = onRetry;
     return self();
   }
 

@@ -1,9 +1,6 @@
 package htnl5.yarl.retry;
 
-import htnl5.yarl.Context;
-import htnl5.yarl.DelegateResult;
-import htnl5.yarl.ExceptionPredicates;
-import htnl5.yarl.ResultPredicates;
+import htnl5.yarl.*;
 import htnl5.yarl.functions.CheckedFunction;
 
 final class RetryEngine {
@@ -20,7 +17,7 @@ final class RetryEngine {
 
   static <R> R implementation(final CheckedFunction<Context, ? extends R> action, final Context context,
                               final ExceptionPredicates exceptionPredicates, final ResultPredicates<R> resultPredicates,
-                              final OnRetryListener<? super R> onRetry, final int maxRetryCount,
+                              final EventListener<RetryEvent<? extends R>> onRetry, final int maxRetryCount,
                               final SleepDurationProvider<? super R> sleepDurationProvider, final Sleeper sleeper)
     throws Throwable {
     var tryCount = 0;
@@ -51,7 +48,7 @@ final class RetryEngine {
 
       final var sleepDuration =
         sleepDurationProvider.apply(new SleepDurationEvent<>(tryCount, outcome, context));
-      onRetry.accept(new OnRetryEvent<>(outcome, sleepDuration, tryCount, context));
+      onRetry.accept(new RetryEvent<>(outcome, sleepDuration, tryCount, context));
       if (sleepDuration.isPositive()) {
         sleeper.sleep(sleepDuration);
       }

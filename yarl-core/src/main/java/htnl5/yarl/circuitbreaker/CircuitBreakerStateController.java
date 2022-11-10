@@ -2,6 +2,7 @@ package htnl5.yarl.circuitbreaker;
 
 import htnl5.yarl.Context;
 import htnl5.yarl.DelegateResult;
+import htnl5.yarl.EventListener;
 
 import java.time.Clock;
 import java.time.Duration;
@@ -14,7 +15,7 @@ import java.util.function.Consumer;
 abstract class CircuitBreakerStateController<R> implements ICircuitBreakerController<R> {
   protected final Duration durationOfBreak;
   protected final Clock clock;
-  protected final OnBreakListener<R> onBreak;
+  protected final EventListener<BreakEvent<? extends R>> onBreak;
   protected final Consumer<Context> onReset;
   protected final Runnable onHalfOpen;
 
@@ -25,11 +26,11 @@ abstract class CircuitBreakerStateController<R> implements ICircuitBreakerContro
   protected final Lock lock = new ReentrantLock();
 
   protected CircuitBreakerStateController(final Duration durationOfBreak, final Clock clock,
-                                          final OnBreakListener<? super R> onBreak, final Consumer<Context> onReset,
-                                          final Runnable onHalfOpen) {
+                                          final EventListener<BreakEvent<? extends R>> onBreak,
+                                          final Consumer<Context> onReset, final Runnable onHalfOpen) {
     this.durationOfBreak = durationOfBreak;
     this.clock = clock;
-    this.onBreak = onBreak::accept;
+    this.onBreak = onBreak;
     this.onReset = onReset;
     this.onHalfOpen = onHalfOpen;
 
@@ -98,7 +99,7 @@ abstract class CircuitBreakerStateController<R> implements ICircuitBreakerContro
         : clock.millis() + durationOfBreak.toMillis();
       final var transitionedState = state;
       state = CircuitBreakerState.OPEN;
-      onBreak.accept(new OnBreakEvent<>(lastOutcome, transitionedState, durationOfBreak, context));
+      onBreak.accept(new BreakEvent<>(lastOutcome, transitionedState, durationOfBreak, context));
     } finally {
       lock.unlock();
     }

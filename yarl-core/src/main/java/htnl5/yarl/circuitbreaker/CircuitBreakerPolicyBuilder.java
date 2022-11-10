@@ -1,6 +1,7 @@
 package htnl5.yarl.circuitbreaker;
 
 import htnl5.yarl.Context;
+import htnl5.yarl.EventListener;
 import htnl5.yarl.PolicyBuilder;
 
 import java.time.Clock;
@@ -14,7 +15,7 @@ public final class CircuitBreakerPolicyBuilder<R> extends PolicyBuilder<R, Circu
 
   private Clock clock = Clock.systemUTC();
 
-  private OnBreakListener<R> onBreak = event -> {
+  private EventListener<BreakEvent<? extends R>> onBreak = event -> {
   };
 
   private Consumer<Context> onReset = ctx -> {
@@ -51,13 +52,13 @@ public final class CircuitBreakerPolicyBuilder<R> extends PolicyBuilder<R, Circu
     return self();
   }
 
-  OnBreakListener<R> getOnBreak() {
+  EventListener<BreakEvent<? extends R>> getOnBreak() {
     return onBreak;
   }
 
-  public CircuitBreakerPolicyBuilder<R> onBreak(final OnBreakListener<? super R> onBreak) {
+  public CircuitBreakerPolicyBuilder<R> onBreak(final EventListener<BreakEvent<? extends R>> onBreak) {
     Objects.requireNonNull(onBreak, "onBreak must not be null.");
-    this.onBreak = onBreak::accept;
+    this.onBreak = onBreak;
     return self();
   }
 

@@ -2,6 +2,7 @@ package htnl5.yarl.circuitbreaker;
 
 import htnl5.yarl.Context;
 import htnl5.yarl.DelegateResult;
+import htnl5.yarl.EventListener;
 
 import java.time.Clock;
 import java.time.Duration;
@@ -13,7 +14,7 @@ class ConsecutiveCountCircuitBreakerController<R> extends CircuitBreakerStateCon
   private int consecutiveFailureCount;
 
   ConsecutiveCountCircuitBreakerController(int exceptionsAllowedBeforeBreaking, final Duration durationOfBreak,
-                                           final Clock clock, final OnBreakListener<? super R> onBreak,
+                                           final Clock clock, final EventListener<BreakEvent<? extends R>> onBreak,
                                            final Consumer<Context> onReset, final Runnable onHalfOpen) {
     super(durationOfBreak, clock, onBreak, onReset, onHalfOpen);
     this.exceptionsAllowedBeforeBreaking = exceptionsAllowedBeforeBreaking;
