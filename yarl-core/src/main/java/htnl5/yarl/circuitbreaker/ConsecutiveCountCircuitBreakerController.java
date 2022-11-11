@@ -23,7 +23,12 @@ class ConsecutiveCountCircuitBreakerController<R> extends CircuitBreakerStateCon
 
   @Override
   protected void resetSpecific() {
-    consecutiveFailureCount = 0;
+    lock.lock();
+    try {
+      consecutiveFailureCount = 0;
+    } finally {
+      lock.unlock();
+    }
   }
 
   @Override
@@ -42,7 +47,7 @@ class ConsecutiveCountCircuitBreakerController<R> extends CircuitBreakerStateCon
   }
 
   @Override
-  public void onActionFailure(final DelegateResult<? extends R> outcome, final Context context) {
+  public void onActionFailure(final DelegateResult<R> outcome, final Context context) {
     lock.lock();
     try {
       switch (state) {

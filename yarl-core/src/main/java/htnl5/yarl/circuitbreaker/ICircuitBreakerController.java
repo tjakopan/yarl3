@@ -18,5 +18,5 @@ interface ICircuitBreakerController<R> {
 
   void onActionSuccess(final Context context);
 
-  void onActionFailure(final DelegateResult<? extends R> outcome, final Context context);
+  void onActionFailure(final DelegateResult<R> outcome, final Context context);
 }
