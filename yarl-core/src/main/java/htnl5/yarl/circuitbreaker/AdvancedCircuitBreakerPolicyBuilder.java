@@ -49,10 +49,10 @@ public final class AdvancedCircuitBreakerPolicyBuilder<R>
   }
 
   @Override
-  public AdvancedCircuitBreakerPolicy<R> build() {
+  public CircuitBreakerPolicy<R, AdvancedCircuitBreakerPolicyBuilder<R>> build() {
     final var controller = new AdvancedCircuitBreakerController<>(failureThreshold, samplingDuration,
       minimumThroughput, durationOfBreak, getClock(), getOnBreak(), getOnReset(), getOnHalfOpen());
-    return new AdvancedCircuitBreakerPolicy<>(this, controller);
+    return new CircuitBreakerPolicy<>(this, controller);
   }
 
   @Override

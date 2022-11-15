@@ -7,6 +7,7 @@ import htnl5.yarl.PolicyResult;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public final class PolicyUtils {
@@ -62,6 +63,23 @@ public final class PolicyUtils {
       counter.incrementAndGet();
       if (counter.get() <= numberOfTimesToRaiseException) throw exceptionSupplier.apply(counter.get());
       return null;
+    });
+  }
+
+  public static <E extends Exception> void raiseException(final Policy<?, ?> policy,
+                                                          final Supplier<? extends E> exceptionSupplier)
+    throws Throwable {
+    policy.execute(() -> {
+      throw exceptionSupplier.get();
+    });
+  }
+
+  public static <E extends Exception> void raiseException(final Policy<?, ?> policy,
+                                                          final Map<String, Object> contextData,
+                                                          final Supplier<? extends E> exceptionSupplier)
+    throws Throwable {
+    policy.execute(contextData, ctx -> {
+      throw exceptionSupplier.get();
     });
   }
 

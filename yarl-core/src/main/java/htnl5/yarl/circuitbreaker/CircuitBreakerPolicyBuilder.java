@@ -33,7 +33,7 @@ public final class CircuitBreakerPolicyBuilder<R>
   }
 
   @Override
-  public CircuitBreakerPolicy<R> build() {
+  public CircuitBreakerPolicy<R, CircuitBreakerPolicyBuilder<R>> build() {
     final var controller = new ConsecutiveCountCircuitBreakerController<>(exceptionsAllowedBeforeBreaking,
       getDurationOfBreak(), getClock(), getOnBreak(), getOnReset(), getOnHalfOpen());
     return new CircuitBreakerPolicy<>(this, controller);

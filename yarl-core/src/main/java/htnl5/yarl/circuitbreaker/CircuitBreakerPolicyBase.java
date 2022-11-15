@@ -8,8 +8,8 @@ import htnl5.yarl.functions.CheckedFunction;
 
 import java.util.Optional;
 
-public abstract sealed class CircuitBreakerPolicyBase<R, B extends CircuitBreakerPolicyBuilderBase<R, B>>
-  extends Policy<R, B> permits AdvancedCircuitBreakerPolicy, CircuitBreakerPolicy {
+public abstract class CircuitBreakerPolicyBase<R, B extends CircuitBreakerPolicyBuilderBase<R, B>>
+  extends Policy<R, B> {
   private final ICircuitBreakerController<R> controller;
 
   protected CircuitBreakerPolicyBase(final PolicyBuilderBase<R, B> policyBuilder,
