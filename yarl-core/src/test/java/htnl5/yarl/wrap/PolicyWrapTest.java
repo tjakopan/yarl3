@@ -152,7 +152,7 @@ public class PolicyWrapTest {
     // twice, causing the breaker to break.
     breaker.reset();
     var throwable = catchThrowable(() ->
-      raiseExceptions(retryWrappingBreaker, 2, i -> new ArithmeticException()));
+      raiseExceptions(retryWrappingBreaker, 2, ArithmeticException.class));
 
     assertThat(throwable).isInstanceOf(ArithmeticException.class);
     assertThat(breaker.getState()).isEqualTo(CircuitBreakerState.OPEN);
@@ -161,7 +161,7 @@ public class PolicyWrapTest {
     // back on the breaker. The exception only hits the breaker once, so the breaker should not break.
     breaker.reset();
     throwable = catchThrowable(() ->
-      raiseExceptions(breakerWrappingRetry, 2, i -> new ArithmeticException()));
+      raiseExceptions(breakerWrappingRetry, 2, ArithmeticException.class));
 
     assertThat(throwable).isInstanceOf(ArithmeticException.class);
     assertThat(breaker.getState()).isEqualTo(CircuitBreakerState.CLOSED);

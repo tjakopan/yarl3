@@ -220,7 +220,7 @@ public class RetryPolicyTest {
       .maxRetryCount(3)
       .build();
 
-    raiseExceptions(policy, 3, i -> new ArithmeticException());
+    raiseExceptions(policy, 3, ArithmeticException.class);
   }
 
   @Test
@@ -231,7 +231,7 @@ public class RetryPolicyTest {
       .maxRetryCount(3)
       .build();
 
-    raiseExceptions(policy, 3, i -> new IllegalArgumentException());
+    raiseExceptions(policy, 3, IllegalArgumentException.class);
   }
 
   @Test
@@ -241,7 +241,7 @@ public class RetryPolicyTest {
       .maxRetryCount(3)
       .build();
 
-    raiseExceptions(policy, 1, i -> new ArithmeticException());
+    raiseExceptions(policy, 1, ArithmeticException.class);
   }
 
   @Test
@@ -252,7 +252,7 @@ public class RetryPolicyTest {
       .maxRetryCount(3)
       .build();
 
-    raiseExceptions(policy, 1, i -> new IllegalArgumentException());
+    raiseExceptions(policy, 1, IllegalArgumentException.class);
   }
 
   @Test
@@ -263,7 +263,7 @@ public class RetryPolicyTest {
       .build();
 
     final var throwable = catchThrowable(() -> raiseExceptions(policy, 3 + 1,
-      i -> new ArithmeticException()));
+      ArithmeticException.class));
 
 
     assertThat(throwable).isInstanceOf(ArithmeticException.class);
@@ -278,7 +278,7 @@ public class RetryPolicyTest {
       .build();
 
     final var throwable = catchThrowable(() -> raiseExceptions(policy, 3 + 1,
-      i -> new IllegalArgumentException()));
+      IllegalArgumentException.class));
 
     assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
   }
@@ -291,7 +291,7 @@ public class RetryPolicyTest {
       .build();
 
     final var throwable = catchThrowable(() -> raiseExceptions(policy, 1,
-      i -> new NullPointerException()));
+      NullPointerException.class));
 
     assertThat(throwable).isInstanceOf(NullPointerException.class);
   }
@@ -305,7 +305,7 @@ public class RetryPolicyTest {
       .build();
 
     final var throwable = catchThrowable(() -> raiseExceptions(policy, 1,
-      i -> new NullPointerException()));
+      NullPointerException.class));
 
     assertThat(throwable).isInstanceOf(NullPointerException.class);
   }
@@ -318,7 +318,7 @@ public class RetryPolicyTest {
       .build();
 
     final var throwable = catchThrowable(() -> raiseExceptions(policy, 1,
-      i -> new ArithmeticException()));
+      ArithmeticException.class));
 
     assertThat(throwable).isInstanceOf(ArithmeticException.class);
   }
@@ -332,7 +332,7 @@ public class RetryPolicyTest {
       .build();
 
     final var throwable = catchThrowable(() -> raiseExceptions(policy, 1,
-      i -> new IllegalArgumentException()));
+      IllegalArgumentException.class));
 
     assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
   }
@@ -344,7 +344,7 @@ public class RetryPolicyTest {
       .maxRetryCount(1)
       .build();
 
-    raiseExceptions(policy, 1, i -> new ArithmeticException());
+    raiseExceptions(policy, 1, ArithmeticException.class);
   }
 
   @Test
@@ -355,7 +355,7 @@ public class RetryPolicyTest {
       .maxRetryCount(1)
       .build();
 
-    raiseExceptions(policy, 1, i -> new IllegalArgumentException());
+    raiseExceptions(policy, 1, IllegalArgumentException.class);
   }
   //</editor-fold>
 

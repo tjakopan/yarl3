@@ -30,7 +30,7 @@ public class AdvancedCircuitBreakerTest {
       .handle(ArithmeticException.class)
       .build();
 
-    final var throwable = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
 
     assertThat(throwable).isInstanceOf(ArithmeticException.class);
   }
@@ -167,11 +167,11 @@ public class AdvancedCircuitBreakerTest {
       .build();
 
     // Three of three actions in this test throw handled failures.
-    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state1 = breaker.getState();
-    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state2 = breaker.getState();
-    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state3 = breaker.getState();
     // Failure threshold exceeded, but throughput not yet.
     // Throughput threshold will be exceeded by the below successful call, but we never break on successful call,
@@ -200,13 +200,13 @@ public class AdvancedCircuitBreakerTest {
       .build();
 
     // Four of four actions in this test throw unhandled failures.
-    final var throwable1 = catchThrowable(() -> raiseException(breaker, NullPointerException::new));
+    final var throwable1 = catchThrowable(() -> raiseException(breaker, NullPointerException.class));
     final var state1 = breaker.getState();
-    final var throwable2 = catchThrowable(() -> raiseException(breaker, NullPointerException::new));
+    final var throwable2 = catchThrowable(() -> raiseException(breaker, NullPointerException.class));
     final var state2 = breaker.getState();
-    final var throwable3 = catchThrowable(() -> raiseException(breaker, NullPointerException::new));
+    final var throwable3 = catchThrowable(() -> raiseException(breaker, NullPointerException.class));
     final var state3 = breaker.getState();
-    final var throwable4 = catchThrowable(() -> raiseException(breaker, NullPointerException::new));
+    final var throwable4 = catchThrowable(() -> raiseException(breaker, NullPointerException.class));
     final var state4 = breaker.getState();
 
     assertThat(throwable1).isInstanceOf(NullPointerException.class);
@@ -238,13 +238,13 @@ public class AdvancedCircuitBreakerTest {
       .build();
 
     // Four of four actions in this test throw handled failures.
-    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state1 = breaker.getState();
-    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state2 = breaker.getState();
-    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state3 = breaker.getState();
-    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state4 = breaker.getState();
     // No adjustment to clock, so all exceptions were raised within same sampling duration.
     final var actionExecutedWhenBroken = new AtomicBoolean(false);
@@ -281,18 +281,18 @@ public class AdvancedCircuitBreakerTest {
       .build();
 
     // Four of four actions in this test throw handled failures.
-    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state1 = breaker.getState();
-    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state2 = breaker.getState();
-    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state3 = breaker.getState();
     // Placing the rest of invocations ('samplingDuration' / 2) + 1 seconds later ensures that even if there are only
     // two windows, then the invocations are placed in the second. They are still placed within same sampling duration.
     clock.setInstant(instant.plus(samplingDuration.dividedBy(2L)).plusSeconds(1L));
-    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state4 = breaker.getState();
-    final var throwable5 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable5 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state5 = breaker.getState();
 
     assertThat(throwable1).isInstanceOf(ArithmeticException.class);
@@ -322,14 +322,14 @@ public class AdvancedCircuitBreakerTest {
     // Three of four actions in this test throw handled failures.
     breaker.execute(() -> null);
     final var state1 = breaker.getState();
-    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state2 = breaker.getState();
-    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state3 = breaker.getState();
-    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state4 = breaker.getState();
     // No adjustment to clock, so all exceptions were raised within same sampling duration.
-    final var throwable5 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable5 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state5 = breaker.getState();
 
     assertThat(state1).isEqualTo(CircuitBreakerState.CLOSED);
@@ -360,16 +360,16 @@ public class AdvancedCircuitBreakerTest {
     // Three of four actions in this test throw handled failures.
     breaker.execute(() -> null);
     final var state1 = breaker.getState();
-    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state2 = breaker.getState();
-    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state3 = breaker.getState();
-    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state4 = breaker.getState();
     // Placing the rest of invocations ('samplingDuration' / 2) + 1 seconds later ensures that even if there are only
     // two windows, then the invocations are placed in the second. They are still placed within same sampling duration.
     clock.setInstant(instant.plus(samplingDuration.dividedBy(2L)).plusSeconds(1L));
-    final var throwable5 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable5 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state5 = breaker.getState();
 
     assertThat(state1).isEqualTo(CircuitBreakerState.CLOSED);
@@ -400,12 +400,12 @@ public class AdvancedCircuitBreakerTest {
     final var state1 = breaker.getState();
     breaker.execute(() -> null);
     final var state2 = breaker.getState();
-    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state3 = breaker.getState();
-    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state4 = breaker.getState();
     // No adjustment to clock, so all exceptions were raised withing same sampling duration.
-    final var throwable5 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable5 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state5 = breaker.getState();
 
     assertThat(state1).isEqualTo(CircuitBreakerState.CLOSED);
@@ -437,14 +437,14 @@ public class AdvancedCircuitBreakerTest {
     final var state1 = breaker.getState();
     breaker.execute(() -> null);
     final var state2 = breaker.getState();
-    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state3 = breaker.getState();
-    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state4 = breaker.getState();
     // Placing the rest of invocations ('samplingDuration' / 2) + 1 seconds later ensures that even if there are only
     // two windows, then the invocations are placed in the second. They are still placed within same sampling duration.
     clock.setInstant(instant.plus(samplingDuration.dividedBy(2L)).plusSeconds(1L));
-    final var throwable5 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable5 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state5 = breaker.getState();
 
     assertThat(state1).isEqualTo(CircuitBreakerState.CLOSED);
@@ -471,16 +471,16 @@ public class AdvancedCircuitBreakerTest {
       .build();
 
     // Four of four actions in this test throw handled failures, but only the first three within sampling duration.
-    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state1 = breaker.getState();
-    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state2 = breaker.getState();
-    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state3 = breaker.getState();
     // Adjust clock so that sampling duration (clearly) expires. Fourth exception throw in the next recorded
     // sampling duration.
     clock.setInstant(instant.plus(samplingDuration.multipliedBy(2L)));
-    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state4 = breaker.getState();
 
     assertThat(throwable1).isInstanceOf(ArithmeticException.class);
@@ -505,15 +505,15 @@ public class AdvancedCircuitBreakerTest {
       .build();
 
     // Four of four actions in this test throw handled failures, but only the first three within sampling duration.
-    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state1 = breaker.getState();
-    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state2 = breaker.getState();
-    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state3 = breaker.getState();
     // Adjust clock so that sampling duration (just) expires. Fourth exception throw in following sampling duration.
     clock.setInstant(instant.plus(samplingDuration));
-    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state4 = breaker.getState();
 
     assertThat(throwable1).isInstanceOf(ArithmeticException.class);
@@ -540,17 +540,17 @@ public class AdvancedCircuitBreakerTest {
     // Four of four actions in this test throw handled failures, but only the first three within the original
     // sampling duration.
     // Two actions at the start of the original sampling duration.
-    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state1 = breaker.getState();
-    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state2 = breaker.getState();
     // Creates a new window right at the end of the original sampling duration.
     clock.setInstant(instant.plus(samplingDuration).minusMillis(1L));
-    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state3 = breaker.getState();
     // Adjust clock so that sampling duration (just) expires. Fourth exception throw in following sampling duration.
     clock.setInstant(instant.plus(samplingDuration));
-    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state4 = breaker.getState();
 
     assertThat(throwable1).isInstanceOf(ArithmeticException.class);
@@ -575,17 +575,17 @@ public class AdvancedCircuitBreakerTest {
       .build();
 
     // Four of four actions in this test throw handled failures.
-    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state1 = breaker.getState();
-    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state2 = breaker.getState();
-    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state3 = breaker.getState();
     // Adjust clock so that sampling duration doesn't quite expire. Fourth exception throw in same sampling duration.
     clock.setInstant(instant.plus(samplingDuration).minusMillis(1L));
-    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state4 = breaker.getState();
-    final var throwable5 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable5 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state5 = breaker.getState();
 
     assertThat(throwable1).isInstanceOf(ArithmeticException.class);
@@ -616,7 +616,7 @@ public class AdvancedCircuitBreakerTest {
     final var state1 = breaker.getState();
     breaker.execute(() -> null);
     final var state2 = breaker.getState();
-    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state3 = breaker.getState();
     // No adjustment to clock, so all exception were raised within same sampling duration.
 
@@ -643,7 +643,7 @@ public class AdvancedCircuitBreakerTest {
     final var state2 = breaker.getState();
     breaker.execute(() -> null);
     final var state3 = breaker.getState();
-    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state4 = breaker.getState();
     // No adjustment to clock, so all exception were raised within same sampling duration.
 
@@ -678,13 +678,13 @@ public class AdvancedCircuitBreakerTest {
     final var state2 = breaker.getState();
     breaker.execute(() -> null);
     final var state3 = breaker.getState();
-    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state4 = breaker.getState();
     // Setting the time to just barely into the new sampling duration.
     clock.setInstant(instant.plus(samplingDuration));
     // This failure opens the circuit, because it is the second failure of four calls equalling the failure threshold.
     // The minimum threshold withing the defined sampling duration is met, when using rolling windows.
-    final var throwable5 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable5 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state5 = breaker.getState();
 
     assertThat(state1).isEqualTo(CircuitBreakerState.CLOSED);
@@ -716,15 +716,15 @@ public class AdvancedCircuitBreakerTest {
     // duration, but only barely.
     clock.setInstant(instant.plus(samplingDuration).minusMillis(1L));
     // Two of three actions in this test occur within first sampling duration.
-    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state2 = breaker.getState();
-    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state3 = breaker.getState();
     // Setting the time to just barely into the new sampling duration.
     clock.setInstant(instant.plus(samplingDuration));
     // A third failure occurs just at the beginning of the new sampling duration making the number of failure above
     // the failure threshold. However, the throughput is below the minimum threshold as to open the circuit.
-    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state4 = breaker.getState();
 
     assertThat(state1).isEqualTo(CircuitBreakerState.CLOSED);
@@ -756,15 +756,15 @@ public class AdvancedCircuitBreakerTest {
     // Setting the time to the second window in the rolling metrics.
     clock.setInstant(instant.plus(samplingDuration.dividedBy(numberOfWindowsDefinedInCircuitBreaker)));
     // Three actions occur in the second window of the first sampling duration.
-    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state2 = breaker.getState();
-    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state3 = breaker.getState();
     breaker.execute(() -> null);
     final var state4 = breaker.getState();
     // Setting the time to just barely into the new sampling duration.
     clock.setInstant(instant.plus(samplingDuration));
-    final var throwable5 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable5 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state5 = breaker.getState();
 
     assertThat(state1).isEqualTo(CircuitBreakerState.CLOSED);
@@ -796,16 +796,16 @@ public class AdvancedCircuitBreakerTest {
       .build();
 
     // Four of four actions in this test throw handled failures.
-    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state1 = breaker.getState();
-    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state2 = breaker.getState();
-    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state3 = breaker.getState();
     // No adjustment to clock, so all exception raised within same sampling duration.
-    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state4 = breaker.getState();
-    final var throwable5 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable5 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state5 = breaker.getState();
 
     assertThat(throwable1).isInstanceOf(ArithmeticException.class);
@@ -835,14 +835,14 @@ public class AdvancedCircuitBreakerTest {
     // Three of four actions in this test throw handled failures.
     breaker.execute(() -> null);
     final var state1 = breaker.getState();
-    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state2 = breaker.getState();
-    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state3 = breaker.getState();
-    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state4 = breaker.getState();
     // No adjustment to clock, so all exception raised within same sampling duration.
-    final var throwable5 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable5 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state5 = breaker.getState();
 
     assertThat(state1).isEqualTo(CircuitBreakerState.CLOSED);
@@ -870,16 +870,16 @@ public class AdvancedCircuitBreakerTest {
       .build();
 
     // Four of four actions in this test throw failures, but only the first three within the sampling duration.
-    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state1 = breaker.getState();
-    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state2 = breaker.getState();
-    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state3 = breaker.getState();
     // Adjust clock so that sampling duration (clearly) expires, fourth exception thrown in next recorded sampling
     // duration.
     clock.setInstant(instant.plus(samplingDuration.multipliedBy(2L)));
-    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state4 = breaker.getState();
 
     assertThat(throwable1).isInstanceOf(ArithmeticException.class);
@@ -909,12 +909,12 @@ public class AdvancedCircuitBreakerTest {
     final var state1 = breaker.getState();
     breaker.execute(() -> null);
     final var state2 = breaker.getState();
-    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state3 = breaker.getState();
     // Adjust clock so that sampling duration (just) expires, fourth exception thrown in following sampling
     // duration.
     clock.setInstant(instant.plus(samplingDuration));
-    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state4 = breaker.getState();
 
     assertThat(state1).isEqualTo(CircuitBreakerState.CLOSED);
@@ -937,18 +937,18 @@ public class AdvancedCircuitBreakerTest {
       .build();
 
     // Four of four actions in this test throw failures.
-    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state1 = breaker.getState();
-    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state2 = breaker.getState();
-    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state3 = breaker.getState();
     // Adjust clock so that sampling duration doesn't quite expire, fourth exception thrown in same sampling
     // duration.
     clock.setInstant(instant.plus(samplingDuration).minusMillis(1L));
-    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state4 = breaker.getState();
-    final var throwable5 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable5 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state5 = breaker.getState();
 
     assertThat(throwable1).isInstanceOf(ArithmeticException.class);
@@ -981,7 +981,7 @@ public class AdvancedCircuitBreakerTest {
     final var state1 = breaker.getState();
     breaker.execute(() -> null);
     final var state2 = breaker.getState();
-    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state3 = breaker.getState();
     // No adjustment to clock, so all exceptions were raised within same sampling duration.
 
@@ -1009,7 +1009,7 @@ public class AdvancedCircuitBreakerTest {
     final var state2 = breaker.getState();
     breaker.execute(() -> null);
     final var state3 = breaker.getState();
-    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state4 = breaker.getState();
     // No adjustment to clock, so all exceptions were raised within same sampling duration.
 
@@ -1042,13 +1042,13 @@ public class AdvancedCircuitBreakerTest {
     // Three of four actions in this test occur within the first sampling duration.
     breaker.execute(() -> null);
     final var state2 = breaker.getState();
-    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state3 = breaker.getState();
     // Setting time to just barely into the new sampling duration.
     clock.setInstant(instant.plus(samplingDuration));
     // This failure does not open the circuit, because a new duration should have started and with such low sampling
     // duration, windows should not be used.
-    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state4 = breaker.getState();
 
     assertThat(state1).isEqualTo(CircuitBreakerState.CLOSED);
@@ -1074,18 +1074,18 @@ public class AdvancedCircuitBreakerTest {
       .build();
 
     // Four of four actions in this test throw handled failures.
-    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state1 = breaker.getState();
-    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state2 = breaker.getState();
-    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state3 = breaker.getState();
-    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state4 = breaker.getState();
     clock.setInstant(instant.plus(durationOfBreak));
     // Duration has passed, circuit is now half open.
     final var state5 = breaker.getState();
-    final var throwable5 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable5 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
 
     assertThat(throwable1).isInstanceOf(ArithmeticException.class);
     assertThat(state1).isEqualTo(CircuitBreakerState.CLOSED);
@@ -1112,17 +1112,17 @@ public class AdvancedCircuitBreakerTest {
       .build();
 
     // Four of four actions in this test throw handled failure.
-    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state1 = breaker.getState();
-    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state2 = breaker.getState();
-    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state3 = breaker.getState();
     // Placing the rest of invocations ('samplingDuration' / 2) + 1 seconds later ensures that even if there are only
     // two windows, then the invocations are placed in the second. They are still placed within same sampling duration.
     final var anotherWindowDuration = samplingDuration.dividedBy(2L).plusSeconds(1L);
     clock.setInstant(instant.plus(anotherWindowDuration));
-    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state4 = breaker.getState();
     clock.setInstant(instant.plus(durationOfBreak));
     final var state5 = breaker.getState();
@@ -1131,7 +1131,7 @@ public class AdvancedCircuitBreakerTest {
     clock.setInstant(instant.plus(durationOfBreak).plus(anotherWindowDuration));
     // Duration has passed, circuit is now half open.
     final var state6 = breaker.getState();
-    final var throwable6 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable6 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
 
     assertThat(throwable1).isInstanceOf(ArithmeticException.class);
     assertThat(state1).isEqualTo(CircuitBreakerState.CLOSED);
@@ -1158,19 +1158,19 @@ public class AdvancedCircuitBreakerTest {
       .build();
 
     // Four of four actions in this test throw handled failures.
-    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state1 = breaker.getState();
-    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state2 = breaker.getState();
-    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state3 = breaker.getState();
-    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state4 = breaker.getState();
     clock.setInstant(instant.plus(durationOfBreak));
     // Duration has passed, circuit is now half open.
     final var state5 = breaker.getState();
     // First call after duration raises an exception, so circuit should open again.
-    final var throwable6 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable6 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state6 = breaker.getState();
 
     assertThat(throwable1).isInstanceOf(ArithmeticException.class);
@@ -1199,13 +1199,13 @@ public class AdvancedCircuitBreakerTest {
       .build();
 
     // Four of four actions in this test throw handled failures.
-    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state1 = breaker.getState();
-    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state2 = breaker.getState();
-    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state3 = breaker.getState();
-    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state4 = breaker.getState();
     clock.setInstant(instant.plus(durationOfBreak));
     // Duration has passed, circuit is now half open.
@@ -1238,8 +1238,8 @@ public class AdvancedCircuitBreakerTest {
       .clock(clock)
       .build();
 
-    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
-    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
+    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     // Exception raised, circuit is now open.
     final var state2 = breaker.getState();
     // Break duration passes, circuit is now half open.
@@ -1273,8 +1273,8 @@ public class AdvancedCircuitBreakerTest {
       .clock(clock)
       .build();
 
-    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
-    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
+    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     // Exception raised, circuit is now open.
     final var state2 = breaker.getState();
     // Break duration passes, circuit is now half open.
@@ -1315,8 +1315,8 @@ public class AdvancedCircuitBreakerTest {
       .clock(clock)
       .build();
 
-    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
-    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
+    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     // Exception raised, circuit is now open.
     final var state2 = breaker.getState();
     // Break duration passes, circuit is now half open.
@@ -1411,8 +1411,8 @@ public class AdvancedCircuitBreakerTest {
       .clock(clock)
       .build();
 
-    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
-    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
+    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     // Exception raised, circuit is now open.
     final var state2 = breaker.getState();
     // Break duration passes, circuit is now half open.
@@ -1588,13 +1588,13 @@ public class AdvancedCircuitBreakerTest {
       .build();
 
     // Four of four actions in this test throw handled failures.
-    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state1 = breaker.getState();
-    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state2 = breaker.getState();
-    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state3 = breaker.getState();
-    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state4 = breaker.getState();
     // Reset circuit with no time having passed.
     breaker.reset();
@@ -1660,14 +1660,14 @@ public class AdvancedCircuitBreakerTest {
       .build();
 
     // Four of four actions in this test throw handled failures.
-    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state1 = breaker.getState();
-    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state2 = breaker.getState();
-    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state3 = breaker.getState();
     // No adjustment to clock, so all exceptions raised within same sampling duration.
-    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state4 = breaker.getState();
 
     assertThat(throwable1).isInstanceOf(ArithmeticException.class);
@@ -1705,21 +1705,21 @@ public class AdvancedCircuitBreakerTest {
       .build();
 
     // Four of four actions in this test throw handled failures.
-    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state1 = breaker.getState();
     final var onBreak1 = onBreakCalled.get();
-    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state2 = breaker.getState();
     final var onBreak2 = onBreakCalled.get();
-    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state3 = breaker.getState();
     final var onBreak3 = onBreakCalled.get();
     // No adjustment to clock, so all exceptions raised within same sampling duration.
-    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state4 = breaker.getState();
     final var onBreak4 = onBreakCalled.get();
     // Call through circuit when already broken should not re-trigger onBreak.
-    final var throwable5 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable5 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state5 = breaker.getState();
     final var onBreak5 = onBreakCalled.get();
 
@@ -1779,8 +1779,8 @@ public class AdvancedCircuitBreakerTest {
     // Break circuit in the normal manner: onBreak should be called once.
     final var state1 = breaker.getState();
     final var onBreak1 = onBreakCalled.get();
-    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
-    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
+    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state3 = breaker.getState();
     final var onBreak3 = onBreakCalled.get();
     // Permit the second (long-running) execution to hit the open circuit with its failure.
@@ -1820,14 +1820,14 @@ public class AdvancedCircuitBreakerTest {
       .build();
 
     // Four of four actions in this test throw handled failures.
-    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state1 = breaker.getState();
-    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state2 = breaker.getState();
-    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state3 = breaker.getState();
     // No adjustment to clock, so all exceptions raised within same sampling duration.
-    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state4 = breaker.getState();
     final var onBreak4 = onBreakCalled.get();
     clock.setInstant(instant.plus(durationOfBreak));
@@ -1890,14 +1890,14 @@ public class AdvancedCircuitBreakerTest {
       .build();
 
     // Four of four actions in this test throw handled failures.
-    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state1 = breaker.getState();
-    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state2 = breaker.getState();
-    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state3 = breaker.getState();
     // No adjustment to clock, so all exception raised within same sampling duration.
-    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state4 = breaker.getState();
     clock.setInstant(instant.plus(durationOfBreak));
     // Duration has passed, circuit is now half open.
@@ -1936,14 +1936,14 @@ public class AdvancedCircuitBreakerTest {
       .build();
 
     // Four of four actions in this test throw handled failures.
-    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state1 = breaker.getState();
-    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state2 = breaker.getState();
-    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state3 = breaker.getState();
     // No adjustment to clock, so all exception raised within same sampling duration.
-    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state4 = breaker.getState();
     clock.setInstant(instant.plus(durationOfBreak));
     // Duration has passed, circuit is now half open.
@@ -1999,13 +1999,13 @@ public class AdvancedCircuitBreakerTest {
       .onBreak(event -> event.outcome().onFailure(passedException::set))
       .build();
 
-    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state1 = breaker.getState();
-    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state2 = breaker.getState();
-    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state3 = breaker.getState();
-    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state4 = breaker.getState();
 
     assertThat(throwable1).isInstanceOf(ArithmeticException.class);
@@ -2028,13 +2028,13 @@ public class AdvancedCircuitBreakerTest {
       .onBreak(event -> transitionedState.set(event.state()))
       .build();
 
-    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state1 = breaker.getState();
-    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state2 = breaker.getState();
-    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state3 = breaker.getState();
-    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state4 = breaker.getState();
 
     assertThat(throwable1).isInstanceOf(ArithmeticException.class);
@@ -2062,19 +2062,19 @@ public class AdvancedCircuitBreakerTest {
       .build();
 
     // Four of four actions in this test throw handled failures.
-    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state1 = breaker.getState();
-    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state2 = breaker.getState();
-    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state3 = breaker.getState();
-    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state4 = breaker.getState();
     clock.setInstant(instant.plus(durationOfBreak));
     // Duration has passed, circuit is now half open.
     final var state5 = breaker.getState();
     // First call after duration raises an exception, so circuit should open again.
-    final var throwable6 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable6 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state6 = breaker.getState();
 
 
@@ -2102,13 +2102,13 @@ public class AdvancedCircuitBreakerTest {
       .onBreak(event -> passedBreakDuration.set(event.durationOfBreak()))
       .build();
 
-    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state1 = breaker.getState();
-    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state2 = breaker.getState();
-    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state3 = breaker.getState();
-    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state4 = breaker.getState();
 
     assertThat(throwable1).isInstanceOf(ArithmeticException.class);
@@ -2156,14 +2156,14 @@ public class AdvancedCircuitBreakerTest {
       .build();
 
     // Four of four actions in this test throw handled failures.
-    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state1 = breaker.getState();
-    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state2 = breaker.getState();
-    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state3 = breaker.getState();
     final var throwable4 = catchThrowable(() ->
-      raiseException(breaker, Map.of("key1", "value1", "key2", "value2"), ArithmeticException::new));
+      raiseException(breaker, Map.of("key1", "value1", "key2", "value2"), ArithmeticException.class));
     final var state4 = breaker.getState();
 
     assertThat(throwable1).isInstanceOf(ArithmeticException.class);
@@ -2192,13 +2192,13 @@ public class AdvancedCircuitBreakerTest {
       .build();
 
     // Four of four actions in this test throw handled failures.
-    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state1 = breaker.getState();
-    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state2 = breaker.getState();
-    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state3 = breaker.getState();
-    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state4 = breaker.getState();
     clock.setInstant(instant.plus(durationOfBreak));
     final var state5 = breaker.getState();
@@ -2230,13 +2230,13 @@ public class AdvancedCircuitBreakerTest {
       .build();
 
     // Four of four actions in this test throw handled failures.
-    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state1 = breaker.getState();
-    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state2 = breaker.getState();
-    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state3 = breaker.getState();
-    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable4 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state4 = breaker.getState();
 
     assertThat(throwable1).isInstanceOf(ArithmeticException.class);
@@ -2266,14 +2266,14 @@ public class AdvancedCircuitBreakerTest {
       .build();
 
     // Four of four actions in this test throw handled failures.
-    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state1 = breaker.getState();
-    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state2 = breaker.getState();
-    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable3 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state3 = breaker.getState();
     final var throwable4 = catchThrowable(() ->
-      raiseException(breaker, Map.of("key", "original_value"), ArithmeticException::new));
+      raiseException(breaker, Map.of("key", "original_value"), ArithmeticException.class));
     final var state4 = breaker.getState();
     final var contextValue4 = contextValue.get();
     clock.setInstant(instant.plus(durationOfBreak));
@@ -2319,7 +2319,7 @@ public class AdvancedCircuitBreakerTest {
       .handle(ArithmeticException.class)
       .build();
 
-    final var throwable = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
 
     assertThat(throwable).isInstanceOf(ArithmeticException.class);
     assertThat(breaker.getState()).isEqualTo(CircuitBreakerState.CLOSED);
@@ -2337,9 +2337,9 @@ public class AdvancedCircuitBreakerTest {
       .handle(ArithmeticException.class)
       .build();
 
-    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state1 = breaker.getState();
-    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state2 = breaker.getState();
 
     assertThat(throwable1).isInstanceOf(ArithmeticException.class);
@@ -2360,9 +2360,9 @@ public class AdvancedCircuitBreakerTest {
       .handle(ArithmeticException.class)
       .build();
 
-    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable1 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state1 = breaker.getState();
-    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
+    final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state2 = breaker.getState();
     final var lastException2 = breaker.getLastOutcome()
       .map(outcome -> outcome.fold(o -> null, Function.identity()))

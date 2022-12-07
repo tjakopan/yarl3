@@ -64,7 +64,7 @@ public class RetryPolicyWithSleepTest {
       .sleeper(NO_OP_SLEEPER)
       .build();
 
-    raiseExceptions(policy, 3, i -> new ArithmeticException());
+    raiseExceptions(policy, 3, ArithmeticException.class);
   }
 
   @Test
@@ -77,7 +77,7 @@ public class RetryPolicyWithSleepTest {
       .sleeper(NO_OP_SLEEPER)
       .build();
 
-    raiseExceptions(policy, 3, i -> new IllegalArgumentException());
+    raiseExceptions(policy, 3, IllegalArgumentException.class);
   }
 
   @Test
@@ -88,7 +88,7 @@ public class RetryPolicyWithSleepTest {
       .sleeper(NO_OP_SLEEPER)
       .build();
 
-    raiseExceptions(policy, 2, i -> new ArithmeticException());
+    raiseExceptions(policy, 2, ArithmeticException.class);
   }
 
   @Test
@@ -101,7 +101,7 @@ public class RetryPolicyWithSleepTest {
       .sleeper(NO_OP_SLEEPER)
       .build();
 
-    raiseExceptions(policy, 2, i -> new ArithmeticException());
+    raiseExceptions(policy, 2, ArithmeticException.class);
   }
 
   @Test
@@ -113,7 +113,7 @@ public class RetryPolicyWithSleepTest {
       .build();
 
     final var throwable = catchThrowable(() -> raiseExceptions(policy, 3 + 1,
-      i -> new ArithmeticException()));
+      ArithmeticException.class));
 
     assertThat(throwable).isInstanceOf(ArithmeticException.class);
   }
@@ -128,7 +128,7 @@ public class RetryPolicyWithSleepTest {
       .build();
 
     final var throwable = catchThrowable(() -> raiseExceptions(policy, 3 + 1,
-      i -> new IllegalArgumentException()));
+      IllegalArgumentException.class));
 
     assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
   }
@@ -142,7 +142,7 @@ public class RetryPolicyWithSleepTest {
       .build();
 
     final var throwable = catchThrowable(() -> raiseExceptions(policy, 1,
-      i -> new NullPointerException()));
+      NullPointerException.class));
 
     assertThat(throwable).isInstanceOf(NullPointerException.class);
   }
@@ -157,7 +157,7 @@ public class RetryPolicyWithSleepTest {
       .build();
 
     final var throwable = catchThrowable(() -> raiseExceptions(policy, 1,
-      i -> new NullPointerException()));
+      NullPointerException.class));
 
     assertThat(throwable).isInstanceOf(NullPointerException.class);
   }
@@ -171,7 +171,7 @@ public class RetryPolicyWithSleepTest {
       .build();
 
     final var throwable = catchThrowable(() -> raiseExceptions(policy, 1,
-      i -> new ArithmeticException()));
+      ArithmeticException.class));
 
     assertThat(throwable).isInstanceOf(ArithmeticException.class);
   }
@@ -186,7 +186,7 @@ public class RetryPolicyWithSleepTest {
       .build();
 
     final var throwable = catchThrowable(() -> raiseExceptions(policy, 1,
-      i -> new IllegalArgumentException()));
+      IllegalArgumentException.class));
 
     assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
   }
@@ -199,7 +199,7 @@ public class RetryPolicyWithSleepTest {
       .sleeper(NO_OP_SLEEPER)
       .build();
 
-    raiseExceptions(policy, 1, i -> new ArithmeticException());
+    raiseExceptions(policy, 1, ArithmeticException.class);
   }
 
   @Test
@@ -211,7 +211,7 @@ public class RetryPolicyWithSleepTest {
       .sleeper(NO_OP_SLEEPER)
       .build();
 
-    raiseExceptions(policy, 1, i -> new IllegalArgumentException());
+    raiseExceptions(policy, 1, IllegalArgumentException.class);
   }
 
   @Test
@@ -225,7 +225,7 @@ public class RetryPolicyWithSleepTest {
       .sleeper(sleeper)
       .build();
 
-    raiseExceptions(policy, 3, i -> new ArithmeticException());
+    raiseExceptions(policy, 3, ArithmeticException.class);
 
     assertThat(totalTimeSlept.get()).isEqualTo(Duration.ofSeconds(1 + 2 + 3));
   }
@@ -241,7 +241,7 @@ public class RetryPolicyWithSleepTest {
       .build();
 
     final var throwable = catchThrowable(() -> raiseExceptions(policy, 3 + 1,
-      i -> new ArithmeticException()));
+      ArithmeticException.class));
 
     assertThat(throwable).isInstanceOf(ArithmeticException.class);
     assertThat(totalTimeSlept.get()).isEqualTo(Duration.ofSeconds(1 + 2 + 3));
@@ -258,7 +258,7 @@ public class RetryPolicyWithSleepTest {
       .sleeper(sleeper)
       .build();
 
-    raiseExceptions(policy, 2, i -> new ArithmeticException());
+    raiseExceptions(policy, 2, ArithmeticException.class);
 
     assertThat(totalTimeSlept.get()).isEqualTo(Duration.ofSeconds(1 + 2));
   }
@@ -274,7 +274,7 @@ public class RetryPolicyWithSleepTest {
       .build();
 
     final var throwable = catchThrowable(() -> raiseExceptions(policy, 1,
-      i -> new NullPointerException()));
+      NullPointerException.class));
 
     assertThat(throwable).isInstanceOf(NullPointerException.class);
     assertThat(totalTimeSlept.get()).isEqualTo(Duration.ZERO);
@@ -292,7 +292,7 @@ public class RetryPolicyWithSleepTest {
       .sleeper(NO_OP_SLEEPER)
       .build();
 
-    raiseExceptions(policy, 3, i -> new ArithmeticException());
+    raiseExceptions(policy, 3, ArithmeticException.class);
 
     assertThat(actualSleepDurations).containsExactlyElementsOf(expectedSleepDurations);
   }
@@ -323,7 +323,7 @@ public class RetryPolicyWithSleepTest {
       .sleeper(NO_OP_SLEEPER)
       .build();
 
-    raiseExceptions(policy, 5, i -> new ArithmeticException());
+    raiseExceptions(policy, 5, ArithmeticException.class);
 
     assertThat(actualSleepDurations).containsExactlyElementsOf(expectedSleepDurations);
   }

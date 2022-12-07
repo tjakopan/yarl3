@@ -4,10 +4,10 @@ import htnl5.yarl.Context;
 import htnl5.yarl.Policy;
 import htnl5.yarl.PolicyResult;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public final class PolicyUtils {
@@ -66,20 +66,33 @@ public final class PolicyUtils {
     });
   }
 
+  public static <E extends Exception> void raiseExceptions(final Policy<?, ?> policy,
+                                                           final int numberOfTimesToRaiseException,
+                                                           final Class<? extends E> exceptionClass)
+    throws Throwable {
+    raiseExceptions(policy, numberOfTimesToRaiseException, i -> {
+      try {
+        return exceptionClass.getDeclaredConstructor().newInstance();
+      } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+        throw new RuntimeException(e);
+      }
+    });
+  }
+
   public static <E extends Exception> void raiseException(final Policy<?, ?> policy,
-                                                          final Supplier<? extends E> exceptionSupplier)
+                                                          final Class<? extends E> exceptionClass)
     throws Throwable {
     policy.execute(() -> {
-      throw exceptionSupplier.get();
+      throw exceptionClass.getDeclaredConstructor().newInstance();
     });
   }
 
   public static <E extends Exception> void raiseException(final Policy<?, ?> policy,
                                                           final Map<String, Object> contextData,
-                                                          final Supplier<? extends E> exceptionSupplier)
+                                                          final Class<? extends E> exceptionClass)
     throws Throwable {
     policy.execute(contextData, ctx -> {
-      throw exceptionSupplier.get();
+      throw exceptionClass.getDeclaredConstructor().newInstance();
     });
   }
 
