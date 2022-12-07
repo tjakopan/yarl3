@@ -142,7 +142,7 @@ public class PolicyWrapTest {
       .build();
     final var breaker = CircuitBreakerPolicy.builder()
       .handle(Exception.class)
-      .exceptionsAllowedBeforeBreaking(2)
+      .failuresAllowedBeforeBreaking(2)
       .durationOfBreak(Duration.ofMillis(Long.MAX_VALUE))
       .build();
     final var retryWrappingBreaker = PolicyWrap.wrap(retry, breaker);
@@ -175,7 +175,7 @@ public class PolicyWrapTest {
       .build();
     final var breaker = CircuitBreakerPolicy.<Result>builder()
       .handleResult(Result.FAULT)
-      .exceptionsAllowedBeforeBreaking(2)
+      .failuresAllowedBeforeBreaking(2)
       .durationOfBreak(Duration.ofMillis(Long.MAX_VALUE))
       .build();
     final var retryWrappingBreaker = PolicyWrap.wrap(retry, breaker);

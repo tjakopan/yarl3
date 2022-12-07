@@ -5,18 +5,18 @@ import java.util.Objects;
 
 public final class CircuitBreakerPolicyBuilder<R>
   extends CircuitBreakerPolicyBuilderBase<R, CircuitBreakerPolicyBuilder<R>> {
-  private int exceptionsAllowedBeforeBreaking = 1;
+  private int failuresAllowedBeforeBreaking = 1;
 
   private Duration durationOfBreak = Duration.ofMinutes(1);
 
-  int getExceptionsAllowedBeforeBreaking() {
-    return exceptionsAllowedBeforeBreaking;
+  int getFailuresAllowedBeforeBreaking() {
+    return failuresAllowedBeforeBreaking;
   }
 
-  public CircuitBreakerPolicyBuilder<R> exceptionsAllowedBeforeBreaking(final int exceptionsAllowedBeforeBreaking) {
-    if (exceptionsAllowedBeforeBreaking <= 0)
-      throw new IllegalArgumentException("exceptionsAllowedBeforeBreaking must be greater than zero.");
-    this.exceptionsAllowedBeforeBreaking = exceptionsAllowedBeforeBreaking;
+  public CircuitBreakerPolicyBuilder<R> failuresAllowedBeforeBreaking(final int failuresAllowedBeforeBreaking) {
+    if (failuresAllowedBeforeBreaking <= 0)
+      throw new IllegalArgumentException("failuresAllowedBeforeBreaking must be greater than zero.");
+    this.failuresAllowedBeforeBreaking = failuresAllowedBeforeBreaking;
     return self();
   }
 
@@ -34,7 +34,7 @@ public final class CircuitBreakerPolicyBuilder<R>
 
   @Override
   public CircuitBreakerPolicy<R, CircuitBreakerPolicyBuilder<R>> build() {
-    final var controller = new ConsecutiveCountCircuitBreakerController<>(exceptionsAllowedBeforeBreaking,
+    final var controller = new ConsecutiveCountCircuitBreakerController<>(failuresAllowedBeforeBreaking,
       getDurationOfBreak(), getClock(), getOnBreak(), getOnReset(), getOnHalfOpen());
     return new CircuitBreakerPolicy<>(this, controller);
   }

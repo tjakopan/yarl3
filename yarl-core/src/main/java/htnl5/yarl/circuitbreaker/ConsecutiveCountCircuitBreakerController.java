@@ -9,15 +9,15 @@ import java.time.Duration;
 import java.util.function.Consumer;
 
 class ConsecutiveCountCircuitBreakerController<R> extends CircuitBreakerStateController<R> {
-  private final int exceptionsAllowedBeforeBreaking;
+  private final int failuresAllowedBeforeBreaking;
 
   private int consecutiveFailureCount;
 
-  ConsecutiveCountCircuitBreakerController(int exceptionsAllowedBeforeBreaking, final Duration durationOfBreak,
+  ConsecutiveCountCircuitBreakerController(int failuresAllowedBeforeBreaking, final Duration durationOfBreak,
                                            final Clock clock, final EventListener<BreakEvent<? extends R>> onBreak,
                                            final Consumer<Context> onReset, final Runnable onHalfOpen) {
     super(durationOfBreak, clock, onBreak, onReset, onHalfOpen);
-    this.exceptionsAllowedBeforeBreaking = exceptionsAllowedBeforeBreaking;
+    this.failuresAllowedBeforeBreaking = failuresAllowedBeforeBreaking;
     consecutiveFailureCount = 0;
   }
 
@@ -53,7 +53,7 @@ class ConsecutiveCountCircuitBreakerController<R> extends CircuitBreakerStateCon
       switch (state) {
         case CLOSED -> {
           consecutiveFailureCount += 1;
-          if (consecutiveFailureCount >= exceptionsAllowedBeforeBreaking) {
+          if (consecutiveFailureCount >= failuresAllowedBeforeBreaking) {
             break_(context);
           }
         }
