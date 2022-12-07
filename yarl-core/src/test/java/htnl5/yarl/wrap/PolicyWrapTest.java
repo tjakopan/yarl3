@@ -136,11 +136,11 @@ public class PolicyWrapTest {
   //<editor-fold desc="execute tests">
   @Test
   public void wrappingTwoPoliciesAndExecutingShouldWrapOuterThenInnerAroundAction() {
-    final var retry = RetryPolicy.<Void>builder()
+    final var retry = RetryPolicy.builder()
       .handle(Exception.class)
       .maxRetryCount(1)
       .build();
-    final var breaker = CircuitBreakerPolicy.<Void>builder()
+    final var breaker = CircuitBreakerPolicy.builder()
       .handle(Exception.class)
       .exceptionsAllowedBeforeBreaking(2)
       .durationOfBreak(Duration.ofMillis(Long.MAX_VALUE))
@@ -202,11 +202,11 @@ public class PolicyWrapTest {
   //<editor-fold desc="executeAndCapture tests">
   @Test
   public void outermostPolicyHandlingExceptionShouldReportAsPolicyWrapHandledException() {
-    final var outerHandlingNPE = CircuitBreakerPolicy.<Void>builder()
+    final var outerHandlingNPE = CircuitBreakerPolicy.builder()
       .handle(NullPointerException.class)
       .durationOfBreak(Duration.ZERO)
       .build();
-    final var innerHandlingAE = CircuitBreakerPolicy.<Void>builder()
+    final var innerHandlingAE = CircuitBreakerPolicy.builder()
       .handle(ArithmeticException.class)
       .durationOfBreak(Duration.ZERO)
       .build();
@@ -217,18 +217,18 @@ public class PolicyWrapTest {
     });
 
     assertThat(result).isInstanceOf(PolicyResult.Failure.FailureWithException.class);
-    final var f = (PolicyResult.Failure.FailureWithException<Void>) result;
+    final var f = (PolicyResult.Failure.FailureWithException<Object>) result;
     assertThat(f.getFinalException()).isInstanceOf(NullPointerException.class);
     assertThat(f.getExceptionType()).isEqualTo(ExceptionType.HANDLED_BY_THIS_POLICY);
   }
 
   @Test
   public void outermostPolicyNotHandlingExceptionEvenIfInnerPoliciesDoShouldReportAsUnhandledException() {
-    final var outerHandlingNPE = CircuitBreakerPolicy.<Void>builder()
+    final var outerHandlingNPE = CircuitBreakerPolicy.builder()
       .handle(NullPointerException.class)
       .durationOfBreak(Duration.ZERO)
       .build();
-    final var innerHandlingAE = CircuitBreakerPolicy.<Void>builder()
+    final var innerHandlingAE = CircuitBreakerPolicy.builder()
       .handle(ArithmeticException.class)
       .durationOfBreak(Duration.ZERO)
       .build();
@@ -239,7 +239,7 @@ public class PolicyWrapTest {
     });
 
     assertThat(result).isInstanceOf(PolicyResult.Failure.FailureWithException.class);
-    final var f = (PolicyResult.Failure.FailureWithException<Void>) result;
+    final var f = (PolicyResult.Failure.FailureWithException<Object>) result;
     assertThat(f.getFinalException()).isInstanceOf(ArithmeticException.class);
     assertThat(f.getExceptionType()).isEqualTo(ExceptionType.UNHANDLED);
   }

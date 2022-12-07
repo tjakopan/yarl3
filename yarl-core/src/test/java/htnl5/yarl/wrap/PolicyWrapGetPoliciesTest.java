@@ -14,9 +14,9 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 public class PolicyWrapGetPoliciesTest {
   @Test
   public void shouldPassAllNestedPoliciesInSameOrderTheyWereAdded() {
-    final var policy0 = NoOpPolicy.<Void>build();
-    final var policy1 = NoOpPolicy.<Void>build();
-    final var policy2 = NoOpPolicy.<Void>build();
+    final var policy0 = NoOpPolicy.build();
+    final var policy1 = NoOpPolicy.build();
+    final var policy2 = NoOpPolicy.build();
     final var policy = PolicyWrap.wrap(policy0, policy1, policy2);
 
     final var policies = policy.getAllPolicies();
@@ -29,9 +29,9 @@ public class PolicyWrapGetPoliciesTest {
 
   @Test
   public void shouldReturnSequenceFromGetPolicies() {
-    final var policyA = NoOpPolicy.<Void>build();
-    final var policyB = NoOpPolicy.<Void>build();
-    final var policyC = NoOpPolicy.<Void>build();
+    final var policyA = NoOpPolicy.build();
+    final var policyB = NoOpPolicy.build();
+    final var policyC = NoOpPolicy.build();
     final var policy = PolicyWrap.wrap(policyA, policyB, policyC);
 
     final var policies = policy.getAllPolicies();
@@ -41,9 +41,9 @@ public class PolicyWrapGetPoliciesTest {
 
   @Test
   public void shouldReturnSequenceFromGetPolicies2() {
-    final var policyA = NoOpPolicy.<Void>build();
-    final var policyB = NoOpPolicy.<Void>build();
-    final var policyC = NoOpPolicy.<Void>build();
+    final var policyA = NoOpPolicy.build();
+    final var policyB = NoOpPolicy.build();
+    final var policyC = NoOpPolicy.build();
     final var policyWrap = PolicyWrap.wrap(policyA, PolicyWrap.wrap(policyB, policyC));
 
     final var policies = policyWrap.getAllPolicies();
@@ -53,11 +53,11 @@ public class PolicyWrapGetPoliciesTest {
 
   @Test
   public void getPoliciesShouldReturnSinglePolicyOfCorrectType() {
-    final var policyA = NoOpPolicy.<Void>build();
-    final var policyB = RetryPolicy.<Void>builder()
+    final var policyA = NoOpPolicy.build();
+    final var policyB = RetryPolicy.builder()
       .handle(Exception.class)
       .build();
-    final var policyC = NoOpPolicy.<Void>build();
+    final var policyC = NoOpPolicy.build();
     final var policyWrap = PolicyWrap.wrap(policyA, policyB, policyC);
 
     final var policies = policyWrap.getPolicies(RetryPolicy.class);
@@ -67,11 +67,11 @@ public class PolicyWrapGetPoliciesTest {
 
   @Test
   public void getPoliciesShouldReturnEmptyListIfNoPolicyOfThatType() {
-    final var policyA = NoOpPolicy.<Void>build();
-    final var policyB = RetryPolicy.<Void>builder()
+    final var policyA = NoOpPolicy.build();
+    final var policyB = RetryPolicy.builder()
       .handle(Exception.class)
       .build();
-    final var policyC = NoOpPolicy.<Void>build();
+    final var policyC = NoOpPolicy.build();
     final var policyWrap = PolicyWrap.wrap(policyA, policyB, policyC);
 
     final var policies = policyWrap.getPolicies(CircuitBreakerPolicy.class);
@@ -81,11 +81,11 @@ public class PolicyWrapGetPoliciesTest {
 
   @Test
   public void getPoliciesShouldReturnMultiplePoliciesOfTheType() {
-    final var policyA = NoOpPolicy.<Void>build();
-    final var policyB = RetryPolicy.<Void>builder()
+    final var policyA = NoOpPolicy.build();
+    final var policyB = RetryPolicy.builder()
       .handle(Exception.class)
       .build();
-    final var policyC = NoOpPolicy.<Void>build();
+    final var policyC = NoOpPolicy.build();
     final var policyWrap = PolicyWrap.wrap(policyA, policyB, policyC);
 
     final var policies = policyWrap.getPolicies(NoOpPolicy.class);
@@ -95,14 +95,14 @@ public class PolicyWrapGetPoliciesTest {
 
   @Test
   public void getPoliciesShouldReturnPoliciesOfTheTypeMatchingPredicate() {
-    final var policyA = CircuitBreakerPolicy.<Void>builder()
+    final var policyA = CircuitBreakerPolicy.builder()
       .handle(Exception.class)
       .durationOfBreak(Duration.ZERO)
       .build();
-    final var policyB = RetryPolicy.<Void>builder()
+    final var policyB = RetryPolicy.builder()
       .handle(Exception.class)
       .build();
-    final var policyC = CircuitBreakerPolicy.<Void>builder()
+    final var policyC = CircuitBreakerPolicy.builder()
       .handle(Exception.class)
       .durationOfBreak(Duration.ZERO)
       .build();
@@ -117,14 +117,14 @@ public class PolicyWrapGetPoliciesTest {
 
   @Test
   public void getPoliciesShouldReturnEmptyListIfNoneMatchPredicate() {
-    final var policyA = CircuitBreakerPolicy.<Void>builder()
+    final var policyA = CircuitBreakerPolicy.builder()
       .handle(Exception.class)
       .durationOfBreak(Duration.ZERO)
       .build();
-    final var policyB = RetryPolicy.<Void>builder()
+    final var policyB = RetryPolicy.builder()
       .handle(Exception.class)
       .build();
-    final var policyC = CircuitBreakerPolicy.<Void>builder()
+    final var policyC = CircuitBreakerPolicy.builder()
       .handle(Exception.class)
       .durationOfBreak(Duration.ZERO)
       .build();
@@ -138,11 +138,11 @@ public class PolicyWrapGetPoliciesTest {
 
   @Test
   public void getPoliciesWithPredicateShouldReturnMultiplePoliciesOfTheTypeIfMultipleMatchPredicate() {
-    final var policyA = NoOpPolicy.<Void>build();
-    final var policyB = RetryPolicy.<Void>builder()
+    final var policyA = NoOpPolicy.build();
+    final var policyB = RetryPolicy.builder()
       .handle(Exception.class)
       .build();
-    final var policyC = NoOpPolicy.<Void>build();
+    final var policyC = NoOpPolicy.build();
     final var policyWrap = PolicyWrap.wrap(policyA, policyB, policyC);
 
     final var policies = policyWrap.getPolicies(NoOpPolicy.class, p -> true);
@@ -152,8 +152,8 @@ public class PolicyWrapGetPoliciesTest {
 
   @Test
   public void getPoliciesShouldThrowIfClassIsNull() {
-    final var policyA = NoOpPolicy.<Void>build();
-    final var policyB = NoOpPolicy.<Void>build();
+    final var policyA = NoOpPolicy.build();
+    final var policyB = NoOpPolicy.build();
     final var policyWrap = PolicyWrap.wrap(policyA, policyB);
 
     final var throwable = catchThrowable(() -> policyWrap.getPolicies(null));
@@ -164,8 +164,8 @@ public class PolicyWrapGetPoliciesTest {
 
   @Test
   public void getPoliciesWithPredicateShouldThrowIfClassIsNull() {
-    final var policyA = NoOpPolicy.<Void>build();
-    final var policyB = NoOpPolicy.<Void>build();
+    final var policyA = NoOpPolicy.build();
+    final var policyB = NoOpPolicy.build();
     final var policyWrap = PolicyWrap.wrap(policyA, policyB);
 
     final var throwable = catchThrowable(() -> policyWrap.getPolicies(null, p -> true));
@@ -176,8 +176,8 @@ public class PolicyWrapGetPoliciesTest {
 
   @Test
   public void getPoliciesWithPredicateShouldThrowIfPredicateIsNull() {
-    final var policyA = NoOpPolicy.<Void>build();
-    final var policyB = NoOpPolicy.<Void>build();
+    final var policyA = NoOpPolicy.build();
+    final var policyB = NoOpPolicy.build();
     final var policyWrap = PolicyWrap.wrap(policyA, policyB);
 
     final var throwable = catchThrowable(() -> policyWrap.getPolicies(NoOpPolicy.class, null));
@@ -188,11 +188,11 @@ public class PolicyWrapGetPoliciesTest {
 
   @Test
   public void getPolicyShouldReturnSinglePolicyOfTheType() {
-    final var policyA = NoOpPolicy.<Void>build();
-    final var policyB = RetryPolicy.<Void>builder()
+    final var policyA = NoOpPolicy.build();
+    final var policyB = RetryPolicy.builder()
       .handle(Exception.class)
       .build();
-    final var policyC = NoOpPolicy.<Void>build();
+    final var policyC = NoOpPolicy.build();
     final var policyWrap = PolicyWrap.wrap(policyA, policyB, policyC);
 
     final var policy = policyWrap.getPolicy(RetryPolicy.class).orElse(null);
@@ -202,11 +202,11 @@ public class PolicyWrapGetPoliciesTest {
 
   @Test
   public void getPolicyShouldReturnEmptyOptionalIfNoPolicyOfTheType() {
-    final var policyA = NoOpPolicy.<Void>build();
-    final var policyB = RetryPolicy.<Void>builder()
+    final var policyA = NoOpPolicy.build();
+    final var policyB = RetryPolicy.builder()
       .handle(Exception.class)
       .build();
-    final var policyC = NoOpPolicy.<Void>build();
+    final var policyC = NoOpPolicy.build();
     final var policyWrap = PolicyWrap.wrap(policyA, policyB, policyC);
 
     final var policy = policyWrap.getPolicy(CircuitBreakerPolicy.class);
@@ -216,11 +216,11 @@ public class PolicyWrapGetPoliciesTest {
 
   @Test
   public void getPolicyShouldThrowIfMultiplePoliciesOfTheType() {
-    final var policyA = NoOpPolicy.<Void>build();
-    final var policyB = RetryPolicy.<Void>builder()
+    final var policyA = NoOpPolicy.build();
+    final var policyB = RetryPolicy.builder()
       .handle(Exception.class)
       .build();
-    final var policyC = NoOpPolicy.<Void>build();
+    final var policyC = NoOpPolicy.build();
     final var policyWrap = PolicyWrap.wrap(policyA, policyB, policyC);
 
     final var throwable = catchThrowable(() -> policyWrap.getPolicy(NoOpPolicy.class));
@@ -230,14 +230,14 @@ public class PolicyWrapGetPoliciesTest {
 
   @Test
   public void getPolicyShouldReturnSinglePolicyOfTheTypeMatchingPredicate() {
-    final var policyA = CircuitBreakerPolicy.<Void>builder()
+    final var policyA = CircuitBreakerPolicy.builder()
       .handle(Exception.class)
       .durationOfBreak(Duration.ZERO)
       .build();
-    final var policyB = RetryPolicy.<Void>builder()
+    final var policyB = RetryPolicy.builder()
       .handle(Exception.class)
       .build();
-    final var policyC = CircuitBreakerPolicy.<Void>builder()
+    final var policyC = CircuitBreakerPolicy.builder()
       .handle(Exception.class)
       .durationOfBreak(Duration.ZERO)
       .build();
@@ -252,14 +252,14 @@ public class PolicyWrapGetPoliciesTest {
 
   @Test
   public void getPolicyShouldReturnEmptyOptionalIfNoneMatchPredicate() {
-    final var policyA = CircuitBreakerPolicy.<Void>builder()
+    final var policyA = CircuitBreakerPolicy.builder()
       .handle(Exception.class)
       .durationOfBreak(Duration.ZERO)
       .build();
-    final var policyB = RetryPolicy.<Void>builder()
+    final var policyB = RetryPolicy.builder()
       .handle(Exception.class)
       .build();
-    final var policyC = CircuitBreakerPolicy.<Void>builder()
+    final var policyC = CircuitBreakerPolicy.builder()
       .handle(Exception.class)
       .durationOfBreak(Duration.ZERO)
       .build();
@@ -273,11 +273,11 @@ public class PolicyWrapGetPoliciesTest {
 
   @Test
   public void getPolicyWithPredicateShouldThrowIfMultiplePoliciesMatchPredicate() {
-    final var policyA = NoOpPolicy.<Void>build();
-    final var policyB = RetryPolicy.<Void>builder()
+    final var policyA = NoOpPolicy.build();
+    final var policyB = RetryPolicy.builder()
       .handle(Exception.class)
       .build();
-    final var policyC = NoOpPolicy.<Void>build();
+    final var policyC = NoOpPolicy.build();
     final var policyWrap = PolicyWrap.wrap(policyA, policyB, policyC);
 
     final var throwable = catchThrowable(() -> policyWrap.getPolicy(NoOpPolicy.class, p -> true));
@@ -287,8 +287,8 @@ public class PolicyWrapGetPoliciesTest {
 
   @Test
   public void getPolicyShouldThrowIfClassIsNull() {
-    final var policyA = NoOpPolicy.<Void>build();
-    final var policyB = NoOpPolicy.<Void>build();
+    final var policyA = NoOpPolicy.build();
+    final var policyB = NoOpPolicy.build();
     final var policyWrap = PolicyWrap.wrap(policyA, policyB);
 
     final var throwable = catchThrowable(() -> policyWrap.getPolicy(null));
@@ -299,8 +299,8 @@ public class PolicyWrapGetPoliciesTest {
 
   @Test
   public void getPolicyWithPredicateShouldThrowIfClassIsNull() {
-    final var policyA = NoOpPolicy.<Void>build();
-    final var policyB = NoOpPolicy.<Void>build();
+    final var policyA = NoOpPolicy.build();
+    final var policyB = NoOpPolicy.build();
     final var policyWrap = PolicyWrap.wrap(policyA, policyB);
 
     final var throwable = catchThrowable(() -> policyWrap.getPolicy(null, p -> true));
@@ -311,8 +311,8 @@ public class PolicyWrapGetPoliciesTest {
 
   @Test
   public void getPolicyWithPredicateShouldThrowIfPredicateIsNull() {
-    final var policyA = NoOpPolicy.<Void>build();
-    final var policyB = NoOpPolicy.<Void>build();
+    final var policyA = NoOpPolicy.build();
+    final var policyB = NoOpPolicy.build();
     final var policyWrap = PolicyWrap.wrap(policyA, policyB);
 
     final var throwable = catchThrowable(() -> policyWrap.getPolicy(NoOpPolicy.class, null));

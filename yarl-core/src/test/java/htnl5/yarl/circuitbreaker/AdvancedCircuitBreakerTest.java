@@ -18,7 +18,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
 import static htnl5.yarl.helpers.PolicyUtils.raiseException;
-import static htnl5.yarl.helpers.PolicyUtils.raiseExceptions;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
@@ -27,12 +26,11 @@ public class AdvancedCircuitBreakerTest {
   @Test
   public void shouldBeAbleToHandleADurationOfMaxValue() {
     final var breaker = CircuitBreakerPolicy
-      .<Void>advancedBuilder(0.5, Duration.ofSeconds(10), 4, Duration.ofMillis(Long.MAX_VALUE))
+      .advancedBuilder(0.5, Duration.ofSeconds(10), 4, Duration.ofMillis(Long.MAX_VALUE))
       .handle(ArithmeticException.class)
       .build();
 
-    final var throwable = catchThrowable(() ->
-      raiseExceptions(breaker, 1, i -> new ArithmeticException()));
+    final var throwable = catchThrowable(() -> raiseException(breaker, ArithmeticException::new));
 
     assertThat(throwable).isInstanceOf(ArithmeticException.class);
   }
@@ -40,7 +38,7 @@ public class AdvancedCircuitBreakerTest {
   @Test
   public void shouldThrowIfFailureThresholdIsZero() {
     final var throwable = catchThrowable(() -> CircuitBreakerPolicy
-      .<Void>advancedBuilder(0, Duration.ofSeconds(10), 4, Duration.ofSeconds(30))
+      .advancedBuilder(0, Duration.ofSeconds(10), 4, Duration.ofSeconds(30))
       .handle(ArithmeticException.class)
       .build());
 
@@ -51,7 +49,7 @@ public class AdvancedCircuitBreakerTest {
   @Test
   public void shouldThrowIfFailureThresholdIsLessThanZero() {
     final var throwable = catchThrowable(() -> CircuitBreakerPolicy
-      .<Void>advancedBuilder(-0.5, Duration.ofSeconds(10), 4, Duration.ofSeconds(30))
+      .advancedBuilder(-0.5, Duration.ofSeconds(10), 4, Duration.ofSeconds(30))
       .handle(ArithmeticException.class)
       .build());
 
@@ -62,7 +60,7 @@ public class AdvancedCircuitBreakerTest {
   @Test
   public void shouldBeAbleToHandleAFailureThresholdOfOne() {
     CircuitBreakerPolicy
-      .<Void>advancedBuilder(1.0, Duration.ofSeconds(10), 4, Duration.ofSeconds(30))
+      .advancedBuilder(1.0, Duration.ofSeconds(10), 4, Duration.ofSeconds(30))
       .handle(ArithmeticException.class)
       .build();
   }
@@ -70,7 +68,7 @@ public class AdvancedCircuitBreakerTest {
   @Test
   public void shouldThrowIfFailureThresholdIsGreaterThanOne() {
     final var throwable = catchThrowable(() -> CircuitBreakerPolicy
-      .<Void>advancedBuilder(1.01, Duration.ofSeconds(10), 4, Duration.ofSeconds(30))
+      .advancedBuilder(1.01, Duration.ofSeconds(10), 4, Duration.ofSeconds(30))
       .handle(ArithmeticException.class)
       .build());
 
@@ -81,7 +79,7 @@ public class AdvancedCircuitBreakerTest {
   @Test
   public void shouldThrowIfSamplingDurationIsLessThanResolutionOfCircuit() {
     final var throwable = catchThrowable(() -> CircuitBreakerPolicy
-      .<Void>advancedBuilder(0.5, Duration.ofMillis(19), 4, Duration.ofSeconds(30))
+      .advancedBuilder(0.5, Duration.ofMillis(19), 4, Duration.ofSeconds(30))
       .build());
 
     assertThat(throwable).isInstanceOf(IllegalArgumentException.class)
@@ -99,7 +97,7 @@ public class AdvancedCircuitBreakerTest {
   @Test
   public void shouldThrowIfMinimumThroughputIsOne() {
     final var throwable = catchThrowable(() -> CircuitBreakerPolicy
-      .<Void>advancedBuilder(0.5, Duration.ofSeconds(10), 1, Duration.ofSeconds(30))
+      .advancedBuilder(0.5, Duration.ofSeconds(10), 1, Duration.ofSeconds(30))
       .handle(ArithmeticException.class)
       .build());
 
@@ -110,7 +108,7 @@ public class AdvancedCircuitBreakerTest {
   @Test
   public void shouldThrowIfMinimumThroughputIsLessThanOne() {
     final var throwable = catchThrowable(() -> CircuitBreakerPolicy
-      .<Void>advancedBuilder(0.5, Duration.ofSeconds(10), 0, Duration.ofSeconds(30))
+      .advancedBuilder(0.5, Duration.ofSeconds(10), 0, Duration.ofSeconds(30))
       .handle(ArithmeticException.class)
       .build());
 
@@ -121,7 +119,7 @@ public class AdvancedCircuitBreakerTest {
   @Test
   public void shouldThrowIfDurationOfBreakIsLessThanZero() {
     final var throwable = catchThrowable(() -> CircuitBreakerPolicy
-      .<Void>advancedBuilder(0.5, Duration.ofSeconds(10), 4, Duration.ofSeconds(-1))
+      .advancedBuilder(0.5, Duration.ofSeconds(10), 4, Duration.ofSeconds(-1))
       .handle(ArithmeticException.class)
       .build());
 
@@ -132,7 +130,7 @@ public class AdvancedCircuitBreakerTest {
   @Test
   public void shouldBeAbleToHandleDurationOfBreakZero() {
     CircuitBreakerPolicy
-      .<Void>advancedBuilder(0.5, Duration.ofSeconds(10), 4, Duration.ZERO)
+      .advancedBuilder(0.5, Duration.ofSeconds(10), 4, Duration.ZERO)
       .handle(ArithmeticException.class)
       .build();
   }
@@ -140,7 +138,7 @@ public class AdvancedCircuitBreakerTest {
   @Test
   public void shouldInitialiseToClosedState() {
     final var breaker = CircuitBreakerPolicy
-      .<Void>advancedBuilder(0.5, Duration.ofSeconds(10), 4, Duration.ofSeconds(30))
+      .advancedBuilder(0.5, Duration.ofSeconds(10), 4, Duration.ofSeconds(30))
       .handle(ArithmeticException.class)
       .build();
 
@@ -163,7 +161,7 @@ public class AdvancedCircuitBreakerTest {
     throws Throwable {
     final var clock = Clock.fixed(Instant.now(), ZoneId.systemDefault());
     final var breaker = CircuitBreakerPolicy
-      .<Void>advancedBuilder(0.5, Duration.ofSeconds(10), 4, Duration.ofSeconds(30))
+      .advancedBuilder(0.5, Duration.ofSeconds(10), 4, Duration.ofSeconds(30))
       .handle(ArithmeticException.class)
       .clock(clock)
       .build();
@@ -195,7 +193,7 @@ public class AdvancedCircuitBreakerTest {
   public void shouldNotOpenCircuitIfExceptionsRaisedAreNotOneOfTheSpecifiedExceptions() {
     final var clock = Clock.fixed(Instant.now(), ZoneId.systemDefault());
     final var breaker = CircuitBreakerPolicy
-      .<Void>advancedBuilder(0.5, Duration.ofSeconds(10), 4, Duration.ofSeconds(30))
+      .advancedBuilder(0.5, Duration.ofSeconds(10), 4, Duration.ofSeconds(30))
       .handle(ArithmeticException.class)
       .handle(IllegalArgumentException.class)
       .clock(clock)
@@ -234,7 +232,7 @@ public class AdvancedCircuitBreakerTest {
   public void shouldOpenCircuitBlockingExecutionsAndNotingTheLastRaisedExceptionIfFailureThresholdExceededAndThroughputThresholdEqualledWithingSamplingDurationInSameWindow() {
     final var clock = Clock.fixed(Instant.now(), ZoneId.systemDefault());
     final var breaker = CircuitBreakerPolicy
-      .<Void>advancedBuilder(0.5, Duration.ofSeconds(10), 4, Duration.ofSeconds(30))
+      .advancedBuilder(0.5, Duration.ofSeconds(10), 4, Duration.ofSeconds(30))
       .handle(ArithmeticException.class)
       .clock(clock)
       .build();
@@ -277,7 +275,7 @@ public class AdvancedCircuitBreakerTest {
     final var clock = new MutableClock(instant, ZoneId.systemDefault());
     final var samplingDuration = Duration.ofSeconds(10);
     final var breaker = CircuitBreakerPolicy
-      .<Void>advancedBuilder(0.5, samplingDuration, 4, Duration.ofSeconds(30))
+      .advancedBuilder(0.5, samplingDuration, 4, Duration.ofSeconds(30))
       .handle(ArithmeticException.class)
       .clock(clock)
       .build();
@@ -316,7 +314,7 @@ public class AdvancedCircuitBreakerTest {
     throws Throwable {
     final var clock = Clock.fixed(Instant.now(), ZoneId.systemDefault());
     final var breaker = CircuitBreakerPolicy
-      .<Void>advancedBuilder(0.5, Duration.ofSeconds(10), 4, Duration.ofSeconds(30))
+      .advancedBuilder(0.5, Duration.ofSeconds(10), 4, Duration.ofSeconds(30))
       .handle(ArithmeticException.class)
       .clock(clock)
       .build();
@@ -354,7 +352,7 @@ public class AdvancedCircuitBreakerTest {
     final var clock = new MutableClock(instant, ZoneId.systemDefault());
     final var samplingDuration = Duration.ofSeconds(10);
     final var breaker = CircuitBreakerPolicy
-      .<Void>advancedBuilder(0.5, samplingDuration, 4, Duration.ofSeconds(30))
+      .advancedBuilder(0.5, samplingDuration, 4, Duration.ofSeconds(30))
       .handle(ArithmeticException.class)
       .clock(clock)
       .build();
@@ -392,7 +390,7 @@ public class AdvancedCircuitBreakerTest {
     throws Throwable {
     final var clock = Clock.fixed(Instant.now(), ZoneId.systemDefault());
     final var breaker = CircuitBreakerPolicy
-      .<Void>advancedBuilder(0.5, Duration.ofSeconds(10), 4, Duration.ofSeconds(30))
+      .advancedBuilder(0.5, Duration.ofSeconds(10), 4, Duration.ofSeconds(30))
       .handle(ArithmeticException.class)
       .clock(clock)
       .build();
@@ -429,7 +427,7 @@ public class AdvancedCircuitBreakerTest {
     final var clock = new MutableClock(instant, ZoneId.systemDefault());
     final var samplingDuration = Duration.ofSeconds(10);
     final var breaker = CircuitBreakerPolicy
-      .<Void>advancedBuilder(0.5, samplingDuration, 4, Duration.ofSeconds(30))
+      .advancedBuilder(0.5, samplingDuration, 4, Duration.ofSeconds(30))
       .handle(ArithmeticException.class)
       .clock(clock)
       .build();
@@ -467,7 +465,7 @@ public class AdvancedCircuitBreakerTest {
     final var clock = new MutableClock(instant, ZoneId.systemDefault());
     final var samplingDuration = Duration.ofSeconds(10);
     final var breaker = CircuitBreakerPolicy
-      .<Void>advancedBuilder(0.5, samplingDuration, 4, Duration.ofSeconds(30))
+      .advancedBuilder(0.5, samplingDuration, 4, Duration.ofSeconds(30))
       .handle(ArithmeticException.class)
       .clock(clock)
       .build();
@@ -501,7 +499,7 @@ public class AdvancedCircuitBreakerTest {
     final var clock = new MutableClock(instant, ZoneId.systemDefault());
     final var samplingDuration = Duration.ofSeconds(10);
     final var breaker = CircuitBreakerPolicy
-      .<Void>advancedBuilder(0.5, samplingDuration, 4, Duration.ofSeconds(30))
+      .advancedBuilder(0.5, samplingDuration, 4, Duration.ofSeconds(30))
       .handle(ArithmeticException.class)
       .clock(clock)
       .build();
@@ -534,7 +532,7 @@ public class AdvancedCircuitBreakerTest {
     final var clock = new MutableClock(instant, ZoneId.systemDefault());
     final var samplingDuration = Duration.ofSeconds(10);
     final var breaker = CircuitBreakerPolicy
-      .<Void>advancedBuilder(0.5, samplingDuration, 4, Duration.ofSeconds(30))
+      .advancedBuilder(0.5, samplingDuration, 4, Duration.ofSeconds(30))
       .handle(ArithmeticException.class)
       .clock(clock)
       .build();
@@ -571,7 +569,7 @@ public class AdvancedCircuitBreakerTest {
     final var clock = new MutableClock(instant, ZoneId.systemDefault());
     final var samplingDuration = Duration.ofSeconds(10);
     final var breaker = CircuitBreakerPolicy
-      .<Void>advancedBuilder(0.5, samplingDuration, 4, Duration.ofSeconds(30))
+      .advancedBuilder(0.5, samplingDuration, 4, Duration.ofSeconds(30))
       .handle(ArithmeticException.class)
       .clock(clock)
       .build();
@@ -608,7 +606,7 @@ public class AdvancedCircuitBreakerTest {
   public void shouldNotOpenCircuitIfFailureThresholdNotMetAndThroughputNotMet() throws Throwable {
     final var clock = Clock.fixed(Instant.now(), ZoneId.systemDefault());
     final var breaker = CircuitBreakerPolicy
-      .<Void>advancedBuilder(0.5, Duration.ofSeconds(10), 4, Duration.ofSeconds(30))
+      .advancedBuilder(0.5, Duration.ofSeconds(10), 4, Duration.ofSeconds(30))
       .handle(ArithmeticException.class)
       .clock(clock)
       .build();
@@ -633,7 +631,7 @@ public class AdvancedCircuitBreakerTest {
     throws Throwable {
     final var clock = Clock.fixed(Instant.now(), ZoneId.systemDefault());
     final var breaker = CircuitBreakerPolicy
-      .<Void>advancedBuilder(0.5, Duration.ofSeconds(10), 4, Duration.ofSeconds(30))
+      .advancedBuilder(0.5, Duration.ofSeconds(10), 4, Duration.ofSeconds(30))
       .handle(ArithmeticException.class)
       .clock(clock)
       .build();
@@ -663,7 +661,7 @@ public class AdvancedCircuitBreakerTest {
     final var clock = new MutableClock(instant, ZoneId.systemDefault());
     final var samplingDuration = Duration.ofSeconds(10);
     final var breaker = CircuitBreakerPolicy
-      .<Void>advancedBuilder(0.5, samplingDuration, 4, Duration.ofSeconds(30))
+      .advancedBuilder(0.5, samplingDuration, 4, Duration.ofSeconds(30))
       .handle(ArithmeticException.class)
       .clock(clock)
       .build();
@@ -705,7 +703,7 @@ public class AdvancedCircuitBreakerTest {
     final var clock = new MutableClock(instant, ZoneId.systemDefault());
     final var samplingDuration = Duration.ofSeconds(10);
     final var breaker = CircuitBreakerPolicy
-      .<Void>advancedBuilder(0.5, samplingDuration, 4, Duration.ofSeconds(30))
+      .advancedBuilder(0.5, samplingDuration, 4, Duration.ofSeconds(30))
       .handle(ArithmeticException.class)
       .clock(clock)
       .build();
@@ -746,7 +744,7 @@ public class AdvancedCircuitBreakerTest {
     final var samplingDuration = Duration.ofSeconds(10);
     final var numberOfWindowsDefinedInCircuitBreaker = 10;
     final var breaker = CircuitBreakerPolicy
-      .<Void>advancedBuilder(0.5, samplingDuration, 4, Duration.ofSeconds(30))
+      .advancedBuilder(0.5, samplingDuration, 4, Duration.ofSeconds(30))
       .handle(ArithmeticException.class)
       .clock(clock)
       .build();
@@ -792,7 +790,7 @@ public class AdvancedCircuitBreakerTest {
   public void shouldOpenCircuitWithTheLastRaisedExceptionIfFailureThresholdExceededAndThroughputThresholdEqualledWithinSamplingDurationLowSamplingDuration() {
     final var clock = Clock.fixed(Instant.now(), ZoneId.systemDefault());
     final var breaker = CircuitBreakerPolicy
-      .<Void>advancedBuilder(0.5, Duration.ofMillis(199), 4, Duration.ofSeconds(30))
+      .advancedBuilder(0.5, Duration.ofMillis(199), 4, Duration.ofSeconds(30))
       .handle(ArithmeticException.class)
       .clock(clock)
       .build();
@@ -829,7 +827,7 @@ public class AdvancedCircuitBreakerTest {
     throws Throwable {
     final var clock = Clock.fixed(Instant.now(), ZoneId.systemDefault());
     final var breaker = CircuitBreakerPolicy
-      .<Void>advancedBuilder(0.5, Duration.ofMillis(199), 4, Duration.ofSeconds(30))
+      .advancedBuilder(0.5, Duration.ofMillis(199), 4, Duration.ofSeconds(30))
       .handle(ArithmeticException.class)
       .clock(clock)
       .build();
@@ -866,7 +864,7 @@ public class AdvancedCircuitBreakerTest {
     final var clock = new MutableClock(instant, ZoneId.systemDefault());
     final var samplingDuration = Duration.ofMillis(199);
     final var breaker = CircuitBreakerPolicy
-      .<Void>advancedBuilder(0.5, samplingDuration, 4, Duration.ofSeconds(30))
+      .advancedBuilder(0.5, samplingDuration, 4, Duration.ofSeconds(30))
       .handle(ArithmeticException.class)
       .clock(clock)
       .build();
@@ -901,7 +899,7 @@ public class AdvancedCircuitBreakerTest {
     final var clock = new MutableClock(instant, ZoneId.systemDefault());
     final var samplingDuration = Duration.ofMillis(199);
     final var breaker = CircuitBreakerPolicy
-      .<Void>advancedBuilder(0.5, samplingDuration, 4, Duration.ofSeconds(30))
+      .advancedBuilder(0.5, samplingDuration, 4, Duration.ofSeconds(30))
       .handle(ArithmeticException.class)
       .clock(clock)
       .build();
@@ -933,7 +931,7 @@ public class AdvancedCircuitBreakerTest {
     final var clock = new MutableClock(instant, ZoneId.systemDefault());
     final var samplingDuration = Duration.ofMillis(199);
     final var breaker = CircuitBreakerPolicy
-      .<Void>advancedBuilder(0.5, samplingDuration, 4, Duration.ofSeconds(30))
+      .advancedBuilder(0.5, samplingDuration, 4, Duration.ofSeconds(30))
       .handle(ArithmeticException.class)
       .clock(clock)
       .build();
@@ -973,7 +971,7 @@ public class AdvancedCircuitBreakerTest {
     final var instant = Instant.now();
     final var clock = Clock.fixed(instant, ZoneId.systemDefault());
     final var breaker = CircuitBreakerPolicy
-      .<Void>advancedBuilder(0.5, Duration.ofMillis(199), 4, Duration.ofSeconds(30))
+      .advancedBuilder(0.5, Duration.ofMillis(199), 4, Duration.ofSeconds(30))
       .handle(ArithmeticException.class)
       .clock(clock)
       .build();
@@ -999,7 +997,7 @@ public class AdvancedCircuitBreakerTest {
     final var instant = Instant.now();
     final var clock = Clock.fixed(instant, ZoneId.systemDefault());
     final var breaker = CircuitBreakerPolicy
-      .<Void>advancedBuilder(0.5, Duration.ofMillis(199), 4, Duration.ofSeconds(30))
+      .advancedBuilder(0.5, Duration.ofMillis(199), 4, Duration.ofSeconds(30))
       .handle(ArithmeticException.class)
       .clock(clock)
       .build();
@@ -1029,7 +1027,7 @@ public class AdvancedCircuitBreakerTest {
     final var clock = new MutableClock(instant, ZoneId.systemDefault());
     final var samplingDuration = Duration.ofMillis(199);
     final var breaker = CircuitBreakerPolicy
-      .<Void>advancedBuilder(0.5, samplingDuration, 4, Duration.ofSeconds(30))
+      .advancedBuilder(0.5, samplingDuration, 4, Duration.ofSeconds(30))
       .handle(ArithmeticException.class)
       .clock(clock)
       .build();
@@ -1070,7 +1068,7 @@ public class AdvancedCircuitBreakerTest {
     final var clock = new MutableClock(instant, ZoneId.systemDefault());
     final var durationOfBreak = Duration.ofSeconds(30);
     final var breaker = CircuitBreakerPolicy
-      .<Void>advancedBuilder(0.5, Duration.ofSeconds(10), 4, durationOfBreak)
+      .advancedBuilder(0.5, Duration.ofSeconds(10), 4, durationOfBreak)
       .handle(ArithmeticException.class)
       .clock(clock)
       .build();
@@ -1108,7 +1106,7 @@ public class AdvancedCircuitBreakerTest {
     final var samplingDuration = Duration.ofSeconds(10);
     final var durationOfBreak = Duration.ofSeconds(30);
     final var breaker = CircuitBreakerPolicy
-      .<Void>advancedBuilder(0.5, samplingDuration, 4, durationOfBreak)
+      .advancedBuilder(0.5, samplingDuration, 4, durationOfBreak)
       .handle(ArithmeticException.class)
       .clock(clock)
       .build();
@@ -1154,7 +1152,7 @@ public class AdvancedCircuitBreakerTest {
     final var clock = new MutableClock(instant, ZoneId.systemDefault());
     final var durationOfBreak = Duration.ofSeconds(30);
     final var breaker = CircuitBreakerPolicy
-      .<Void>advancedBuilder(0.5, Duration.ofSeconds(10), 4, durationOfBreak)
+      .advancedBuilder(0.5, Duration.ofSeconds(10), 4, durationOfBreak)
       .handle(ArithmeticException.class)
       .clock(clock)
       .build();
@@ -1195,7 +1193,7 @@ public class AdvancedCircuitBreakerTest {
     final var clock = new MutableClock(instant, ZoneId.systemDefault());
     final var durationOfBreak = Duration.ofSeconds(30);
     final var breaker = CircuitBreakerPolicy
-      .<Void>advancedBuilder(0.5, Duration.ofSeconds(10), 4, durationOfBreak)
+      .advancedBuilder(0.5, Duration.ofSeconds(10), 4, durationOfBreak)
       .handle(ArithmeticException.class)
       .clock(clock)
       .build();
@@ -1235,7 +1233,7 @@ public class AdvancedCircuitBreakerTest {
     final var clock = new MutableClock(instant, ZoneId.systemDefault());
     final var durationOfBreak = Duration.ofSeconds(30);
     final var breaker = CircuitBreakerPolicy
-      .<Void>advancedBuilder(0.5, Duration.ofSeconds(10), 2, durationOfBreak)
+      .advancedBuilder(0.5, Duration.ofSeconds(10), 2, durationOfBreak)
       .handle(ArithmeticException.class)
       .clock(clock)
       .build();
@@ -1270,7 +1268,7 @@ public class AdvancedCircuitBreakerTest {
     final var clock = new MutableClock(instant, ZoneId.systemDefault());
     final var durationOfBreak = Duration.ofSeconds(30);
     final var breaker = CircuitBreakerPolicy
-      .<Void>advancedBuilder(0.5, Duration.ofSeconds(10), 2, durationOfBreak)
+      .advancedBuilder(0.5, Duration.ofSeconds(10), 2, durationOfBreak)
       .handle(ArithmeticException.class)
       .clock(clock)
       .build();
@@ -1312,7 +1310,7 @@ public class AdvancedCircuitBreakerTest {
     final var clock = new MutableClock(instant, ZoneId.systemDefault());
     final var durationOfBreak = Duration.ofSeconds(30);
     final var breaker = CircuitBreakerPolicy
-      .<Void>advancedBuilder(0.5, Duration.ofSeconds(10), 2, durationOfBreak)
+      .advancedBuilder(0.5, Duration.ofSeconds(10), 2, durationOfBreak)
       .handle(ArithmeticException.class)
       .clock(clock)
       .build();
@@ -1408,7 +1406,7 @@ public class AdvancedCircuitBreakerTest {
     final var clock = new MutableClock(instant, ZoneId.systemDefault());
     final var durationOfBreak = Duration.ofSeconds(30);
     final var breaker = CircuitBreakerPolicy
-      .<Void>advancedBuilder(0.5, Duration.ofSeconds(10), 2, durationOfBreak)
+      .advancedBuilder(0.5, Duration.ofSeconds(10), 2, durationOfBreak)
       .handle(ArithmeticException.class)
       .clock(clock)
       .build();
@@ -1504,7 +1502,7 @@ public class AdvancedCircuitBreakerTest {
   @Test
   public void shouldOpenCircuitAndBlockCallsIfManualOverrideOpen() {
     final var breaker = CircuitBreakerPolicy
-      .<Void>advancedBuilder(0.5, Duration.ofSeconds(10), 4, Duration.ofSeconds(30))
+      .advancedBuilder(0.5, Duration.ofSeconds(10), 4, Duration.ofSeconds(30))
       .handle(ArithmeticException.class)
       .build();
 
@@ -1527,7 +1525,7 @@ public class AdvancedCircuitBreakerTest {
     assertThat(state3).isEqualTo(CircuitBreakerState.ISOLATED);
     assertThat(breaker.getLastOutcome().isPresent()).isTrue();
     assertThat(breaker.getLastOutcome().get()).isInstanceOf(DelegateResult.Failure.class);
-    final var f = (DelegateResult.Failure<Void>) breaker.getLastOutcome().get();
+    final var f = (DelegateResult.Failure<Object>) breaker.getLastOutcome().get();
     assertThat(f.getException()).isInstanceOf(IsolatedCircuitBreakerException.class);
     assertThat(delegateExecutedWhenBroken.get()).isFalse();
   }
@@ -1538,7 +1536,7 @@ public class AdvancedCircuitBreakerTest {
     final var clock = new MutableClock(instant, ZoneId.systemDefault());
     final var durationOfBreak = Duration.ofSeconds(30);
     final var breaker = CircuitBreakerPolicy
-      .<Void>advancedBuilder(0.5, Duration.ofSeconds(10), 4, durationOfBreak)
+      .advancedBuilder(0.5, Duration.ofSeconds(10), 4, durationOfBreak)
       .handle(ArithmeticException.class)
       .clock(clock)
       .build();
@@ -1564,7 +1562,7 @@ public class AdvancedCircuitBreakerTest {
   @Test
   public void shouldCloseCircuitAgainOnResetAfterManualOverride() throws Throwable {
     final var breaker = CircuitBreakerPolicy
-      .<Void>advancedBuilder(0.5, Duration.ofSeconds(10), 4, Duration.ofSeconds(30))
+      .advancedBuilder(0.5, Duration.ofSeconds(10), 4, Duration.ofSeconds(30))
       .handle(ArithmeticException.class)
       .build();
 

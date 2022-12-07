@@ -47,7 +47,7 @@ public class RetryPolicyWithSleepTest {
   @Test
   public void shouldThrowWhenSleepDurationsIsNull() {
     final var throwable = catchThrowable(() ->
-      RetryPolicy.<Void>builder()
+      RetryPolicy.builder()
         .handle(ArithmeticException.class)
         .sleepDurations((Iterable<Duration>) null)
         .build());
@@ -58,7 +58,7 @@ public class RetryPolicyWithSleepTest {
 
   @Test
   public void shouldNotThrowWhenSpecifiedExceptionThrownSameNumberOfTimesAsThereAreSleepDurations() throws Throwable {
-    final var policy = RetryPolicy.<Void>builder()
+    final var policy = RetryPolicy.builder()
       .handle(ArithmeticException.class)
       .sleepDurations(Duration.ofSeconds(1), Duration.ofSeconds(2), Duration.ofSeconds(3))
       .sleeper(NO_OP_SLEEPER)
@@ -70,7 +70,7 @@ public class RetryPolicyWithSleepTest {
   @Test
   public void shouldNotThrowWhenOneOfTheSpecifiedExceptionsThrownSameNumberOfTimesAsThereAreSleepDurations()
     throws Throwable {
-    final var policy = RetryPolicy.<Void>builder()
+    final var policy = RetryPolicy.builder()
       .handle(ArithmeticException.class)
       .handle(IllegalArgumentException.class)
       .sleepDurations(Duration.ofSeconds(1), Duration.ofSeconds(2), Duration.ofSeconds(3))
@@ -82,7 +82,7 @@ public class RetryPolicyWithSleepTest {
 
   @Test
   public void shouldNotThrowWhenSpecifiedExceptionThrownLessNumberOfTimesThanThereAreSleepDurations() throws Throwable {
-    final var policy = RetryPolicy.<Void>builder()
+    final var policy = RetryPolicy.builder()
       .handle(ArithmeticException.class)
       .sleepDurations(Duration.ofSeconds(1), Duration.ofSeconds(2), Duration.ofSeconds(3))
       .sleeper(NO_OP_SLEEPER)
@@ -94,7 +94,7 @@ public class RetryPolicyWithSleepTest {
   @Test
   public void shouldNotThrowWhenOnOfTheSpecifiedExceptionsThrownLessNumberOfTimesThanThereAreSleepDurations()
     throws Throwable {
-    final var policy = RetryPolicy.<Void>builder()
+    final var policy = RetryPolicy.builder()
       .handle(ArithmeticException.class)
       .handle(IllegalArgumentException.class)
       .sleepDurations(Duration.ofSeconds(1), Duration.ofSeconds(2), Duration.ofSeconds(3))
@@ -106,7 +106,7 @@ public class RetryPolicyWithSleepTest {
 
   @Test
   public void shouldThrowWhenSpecifiedExceptionThrownMoreTimesThanThereAreSleepDurations() {
-    final var policy = RetryPolicy.<Void>builder()
+    final var policy = RetryPolicy.builder()
       .handle(ArithmeticException.class)
       .sleepDurations(Duration.ofSeconds(1), Duration.ofSeconds(2), Duration.ofSeconds(3))
       .sleeper(NO_OP_SLEEPER)
@@ -120,7 +120,7 @@ public class RetryPolicyWithSleepTest {
 
   @Test
   public void shouldThrowWhenOneOfTheSpecifiedExceptionsThrownMoreTimesThanThereAreSleepDurations() {
-    final var policy = RetryPolicy.<Void>builder()
+    final var policy = RetryPolicy.builder()
       .handle(ArithmeticException.class)
       .handle(IllegalArgumentException.class)
       .sleepDurations(Duration.ofSeconds(1), Duration.ofSeconds(2), Duration.ofSeconds(3))
@@ -135,7 +135,7 @@ public class RetryPolicyWithSleepTest {
 
   @Test
   public void shouldThrowWhenExceptionThrownIsNotTheSpecifiedExceptionType() {
-    final var policy = RetryPolicy.<Void>builder()
+    final var policy = RetryPolicy.builder()
       .handle(ArithmeticException.class)
       .sleepDurations(List.of())
       .sleeper(NO_OP_SLEEPER)
@@ -149,7 +149,7 @@ public class RetryPolicyWithSleepTest {
 
   @Test
   public void shouldThrowWhenExceptionThrownIsNotOneOfTheSpecifiedExceptionTypes() {
-    final var policy = RetryPolicy.<Void>builder()
+    final var policy = RetryPolicy.builder()
       .handle(ArithmeticException.class)
       .handle(IllegalArgumentException.class)
       .sleepDurations(List.of())
@@ -164,7 +164,7 @@ public class RetryPolicyWithSleepTest {
 
   @Test
   public void shouldThrowWhenSpecifiedExceptionPredicateIsNotSatisfied() {
-    final var policy = RetryPolicy.<Void>builder()
+    final var policy = RetryPolicy.builder()
       .handle(ArithmeticException.class, e -> false)
       .sleepDurations(List.of())
       .sleeper(NO_OP_SLEEPER)
@@ -178,7 +178,7 @@ public class RetryPolicyWithSleepTest {
 
   @Test
   public void shouldThrowWhenNoneOfTheSpecifiedExceptionPredicatesAreSatisfied() {
-    final var policy = RetryPolicy.<Void>builder()
+    final var policy = RetryPolicy.builder()
       .handle(ArithmeticException.class, e -> false)
       .handle(IllegalArgumentException.class, e -> false)
       .sleepDurations(List.of())
@@ -193,7 +193,7 @@ public class RetryPolicyWithSleepTest {
 
   @Test
   public void shouldNotThrowWhenSpecifiedExceptionPredicateIsSatisfied() throws Throwable {
-    final var policy = RetryPolicy.<Void>builder()
+    final var policy = RetryPolicy.builder()
       .handle(ArithmeticException.class, e -> true)
       .sleepDurations(Duration.ofSeconds(1))
       .sleeper(NO_OP_SLEEPER)
@@ -204,7 +204,7 @@ public class RetryPolicyWithSleepTest {
 
   @Test
   public void shouldNotThrowWhenOneOfTheSpecifiedExceptionPredicatesIsSatisfied() throws Throwable {
-    final var policy = RetryPolicy.<Void>builder()
+    final var policy = RetryPolicy.builder()
       .handle(ArithmeticException.class, e -> true)
       .handle(IllegalArgumentException.class, e -> true)
       .sleepDurations(Duration.ofSeconds(1))
@@ -219,7 +219,7 @@ public class RetryPolicyWithSleepTest {
     throws Throwable {
     final var totalTimeSlept = new AtomicReference<>(Duration.ZERO);
     final var sleeper = new TestSleeper(d -> totalTimeSlept.accumulateAndGet(d, Duration::plus));
-    final var policy = RetryPolicy.<Void>builder()
+    final var policy = RetryPolicy.builder()
       .handle(ArithmeticException.class)
       .sleepDurations(Duration.ofSeconds(1), Duration.ofSeconds(2), Duration.ofSeconds(3))
       .sleeper(sleeper)
@@ -234,7 +234,7 @@ public class RetryPolicyWithSleepTest {
   public void shouldSleepForTheSpecifiedDurationEachRetryWhenSpecifiedExceptionThrownMoreNumberOfTimesThanThereAreSleepDurations() {
     final var totalTimeSlept = new AtomicReference<>(Duration.ZERO);
     final var sleeper = new TestSleeper(d -> totalTimeSlept.accumulateAndGet(d, Duration::plus));
-    final var policy = RetryPolicy.<Void>builder()
+    final var policy = RetryPolicy.builder()
       .handle(ArithmeticException.class)
       .sleepDurations(Duration.ofSeconds(1), Duration.ofSeconds(2), Duration.ofSeconds(3))
       .sleeper(sleeper)
@@ -252,7 +252,7 @@ public class RetryPolicyWithSleepTest {
     throws Throwable {
     final var totalTimeSlept = new AtomicReference<>(Duration.ZERO);
     final var sleeper = new TestSleeper(d -> totalTimeSlept.accumulateAndGet(d, Duration::plus));
-    final var policy = RetryPolicy.<Void>builder()
+    final var policy = RetryPolicy.builder()
       .handle(ArithmeticException.class)
       .sleepDurations(Duration.ofSeconds(1), Duration.ofSeconds(2), Duration.ofSeconds(3))
       .sleeper(sleeper)
@@ -267,7 +267,7 @@ public class RetryPolicyWithSleepTest {
   public void shouldNotSleepIfNoRetries() {
     final var totalTimeSlept = new AtomicReference<>(Duration.ZERO);
     final var sleeper = new TestSleeper(d -> totalTimeSlept.accumulateAndGet(d, Duration::plus));
-    final var policy = RetryPolicy.<Void>builder()
+    final var policy = RetryPolicy.builder()
       .handle(ArithmeticException.class)
       .sleepDurations(List.of())
       .sleeper(sleeper)
@@ -285,7 +285,7 @@ public class RetryPolicyWithSleepTest {
     final var expectedSleepDurations =
       List.of(Duration.ofSeconds(1), Duration.ofSeconds(2), Duration.ofSeconds(3));
     final var actualSleepDurations = new ArrayList<Duration>();
-    final var policy = RetryPolicy.<Void>builder()
+    final var policy = RetryPolicy.builder()
       .handle(ArithmeticException.class)
       .sleepDurations(Duration.ofSeconds(1), Duration.ofSeconds(2), Duration.ofSeconds(3))
       .onRetry(event -> actualSleepDurations.add(event.sleepDuration()))
@@ -300,7 +300,7 @@ public class RetryPolicyWithSleepTest {
   @Test
   public void shouldThrowWhenSleepDurationProviderIsNull() {
     final var throwable = catchThrowable(() ->
-      RetryPolicy.<Void>builder()
+      RetryPolicy.builder()
         .handle(ArithmeticException.class)
         .maxRetryCount(1)
         .sleepDurationProvider(null)
@@ -315,7 +315,7 @@ public class RetryPolicyWithSleepTest {
     final var expectedSleepDurations = List.of(Duration.ofSeconds(2), Duration.ofSeconds(4),
       Duration.ofSeconds(8), Duration.ofSeconds(16), Duration.ofSeconds(32));
     final var actualSleepDurations = new ArrayList<Duration>();
-    final var policy = RetryPolicy.<Void>builder()
+    final var policy = RetryPolicy.builder()
       .handle(ArithmeticException.class)
       .maxRetryCount(5)
       .sleepDurationProvider(event -> Duration.ofSeconds((long) Math.pow(2, event.tryCount())))
@@ -332,7 +332,7 @@ public class RetryPolicyWithSleepTest {
   public void shouldBeAbleToPassHandledExceptionToSleepDurationProvider() throws Throwable {
     final var capturedException = new AtomicReference<Throwable>();
     final var exception = new ArithmeticException();
-    final var policy = RetryPolicy.<Void>builder()
+    final var policy = RetryPolicy.builder()
       .handle(ArithmeticException.class)
       .maxRetryCount(5)
       .sleepDurationProvider(event -> {
@@ -355,7 +355,7 @@ public class RetryPolicyWithSleepTest {
     );
     final var actualSleepDurations = new ArrayList<Duration>();
     //noinspection SuspiciousMethodCalls
-    final var policy = RetryPolicy.<Void>builder()
+    final var policy = RetryPolicy.builder()
       .handle(Exception.class)
       .maxRetryCount(2)
       .sleepDurationProvider(event -> event.outcome().fold(v -> Duration.ZERO, expectedSleepDurations::get))
@@ -377,7 +377,7 @@ public class RetryPolicyWithSleepTest {
     final var expectedSleepDuration = Duration.ofSeconds(1);
     final var actualSleepDuration = new AtomicReference<Duration>();
     final var defaultSleepDuration = Duration.ofSeconds(30);
-    final var policy = RetryPolicy.<Void>builder()
+    final var policy = RetryPolicy.builder()
       .handle(ArithmeticException.class)
       .maxRetryCount(1)
       .sleepDurationProvider(event -> (Duration) event.context().getOrDefault("RetryAfter", defaultSleepDuration))

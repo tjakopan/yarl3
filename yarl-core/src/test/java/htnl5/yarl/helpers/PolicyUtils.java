@@ -54,7 +54,7 @@ public final class PolicyUtils {
     });
   }
 
-  public static <E extends Exception> void raiseExceptions(final Policy<Void, ?> policy,
+  public static <E extends Exception> void raiseExceptions(final Policy<?, ?> policy,
                                                            final int numberOfTimesToRaiseException,
                                                            final Function<Integer, ? extends E> exceptionSupplier)
     throws Throwable {

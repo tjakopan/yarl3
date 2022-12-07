@@ -215,7 +215,7 @@ public class RetryPolicyTest {
   //<editor-fold desc="exception handling tests">
   @Test
   public void shouldNotThrowWhenSpecifiedExceptionThrownSameNumberOfTimesAsRetryCount() throws Throwable {
-    final var policy = RetryPolicy.<Void>builder()
+    final var policy = RetryPolicy.builder()
       .handle(ArithmeticException.class)
       .maxRetryCount(3)
       .build();
@@ -225,7 +225,7 @@ public class RetryPolicyTest {
 
   @Test
   public void shouldNotThrowWhenOneOfTheSpecifiedExceptionsThrownSameNumberOfTimesAsRetryCount() throws Throwable {
-    final var policy = RetryPolicy.<Void>builder()
+    final var policy = RetryPolicy.builder()
       .handle(ArithmeticException.class)
       .handle(IllegalArgumentException.class)
       .maxRetryCount(3)
@@ -236,7 +236,7 @@ public class RetryPolicyTest {
 
   @Test
   public void shouldNotThrowWhenSpecifiedExceptionThrownLessNumberOfTimesThanRetryCount() throws Throwable {
-    final var policy = RetryPolicy.<Void>builder()
+    final var policy = RetryPolicy.builder()
       .handle(ArithmeticException.class)
       .maxRetryCount(3)
       .build();
@@ -246,7 +246,7 @@ public class RetryPolicyTest {
 
   @Test
   public void shouldNotThrowWhenOneOfTheSpecifiedExceptionsThrownLessNumberOfTimesThanRetryCount() throws Throwable {
-    final var policy = RetryPolicy.<Void>builder()
+    final var policy = RetryPolicy.builder()
       .handle(ArithmeticException.class)
       .handle(IllegalArgumentException.class)
       .maxRetryCount(3)
@@ -257,7 +257,7 @@ public class RetryPolicyTest {
 
   @Test
   public void shouldThrowWhenSpecifiedExceptionThrownMoreTimesThanRetryCount() {
-    final var policy = RetryPolicy.<Void>builder()
+    final var policy = RetryPolicy.builder()
       .handle(ArithmeticException.class)
       .maxRetryCount(3)
       .build();
@@ -271,7 +271,7 @@ public class RetryPolicyTest {
 
   @Test
   public void shouldThrowWhenOneOfTheSpecifiedExceptionsAreThrownMoreTimesThanRetryCount() {
-    final var policy = RetryPolicy.<Void>builder()
+    final var policy = RetryPolicy.builder()
       .handle(ArithmeticException.class)
       .handle(IllegalArgumentException.class)
       .maxRetryCount(3)
@@ -285,7 +285,7 @@ public class RetryPolicyTest {
 
   @Test
   public void shouldThrowWhenExceptionThrownIsNotTheSpecifiedExceptionType() {
-    final var policy = RetryPolicy.<Void>builder()
+    final var policy = RetryPolicy.builder()
       .handle(ArithmeticException.class)
       .maxRetryCount(1)
       .build();
@@ -298,7 +298,7 @@ public class RetryPolicyTest {
 
   @Test
   public void shouldThrowWhenExceptionThrownIsNotOneOfTheSpecifiedExceptionTypes() {
-    final var policy = RetryPolicy.<Void>builder()
+    final var policy = RetryPolicy.builder()
       .handle(ArithmeticException.class)
       .handle(IllegalArgumentException.class)
       .maxRetryCount(1)
@@ -312,7 +312,7 @@ public class RetryPolicyTest {
 
   @Test
   public void shouldThrowWhenSpecifiedExceptionPredicateIsNotSatisfied() {
-    final var policy = RetryPolicy.<Void>builder()
+    final var policy = RetryPolicy.builder()
       .handle(ArithmeticException.class, e -> false)
       .maxRetryCount(1)
       .build();
@@ -325,7 +325,7 @@ public class RetryPolicyTest {
 
   @Test
   public void shouldThrowWhenNoneOfTheSpecifiedExceptionPredicatesAreSatisfied() {
-    final var policy = RetryPolicy.<Void>builder()
+    final var policy = RetryPolicy.builder()
       .handle(ArithmeticException.class, e -> false)
       .handle(IllegalArgumentException.class, e -> false)
       .maxRetryCount(1)
@@ -339,7 +339,7 @@ public class RetryPolicyTest {
 
   @Test
   public void shouldNotThrowWhenSpecifiedExceptionPredicateIsSatisfied() throws Throwable {
-    final var policy = RetryPolicy.<Void>builder()
+    final var policy = RetryPolicy.builder()
       .handle(ArithmeticException.class, e -> true)
       .maxRetryCount(1)
       .build();
@@ -349,7 +349,7 @@ public class RetryPolicyTest {
 
   @Test
   public void shouldNotThrowWhenOneOfTheSpecifiedExceptionPredicatesAreSatisfied() throws Throwable {
-    final var policy = RetryPolicy.<Void>builder()
+    final var policy = RetryPolicy.builder()
       .handle(ArithmeticException.class, e -> true)
       .handle(IllegalArgumentException.class, e -> true)
       .maxRetryCount(1)
@@ -400,7 +400,7 @@ public class RetryPolicyTest {
   public void shouldCallOnRetryOnEachRetryWithTheCurrentException() throws Throwable {
     final var expectedMessages = List.of("Exception #1", "Exception #2", "Exception #3");
     final var actualExceptions = new ArrayList<Throwable>();
-    final var policy = RetryPolicy.<Void>builder()
+    final var policy = RetryPolicy.builder()
       .handle(ArithmeticException.class)
       .maxRetryCount(3)
       .onRetry(event -> event.outcome().onFailure(actualExceptions::add))
@@ -417,7 +417,7 @@ public class RetryPolicyTest {
   @Test
   public void shouldCallOnRetryWithAHandledCause() throws Throwable {
     final var actualCause = new AtomicReference<Throwable>();
-    final var policy = RetryPolicy.<Void>builder()
+    final var policy = RetryPolicy.builder()
       .handleCause(ArithmeticException.class)
       .maxRetryCount(3)
       .onRetry(event -> event.outcome().onFailure(actualCause::set))
@@ -433,7 +433,7 @@ public class RetryPolicyTest {
   @Test
   public void shouldCallOnRetryWithANestedHandledCause() throws Throwable {
     final var actualCause = new AtomicReference<Throwable>();
-    final var policy = RetryPolicy.<Void>builder()
+    final var policy = RetryPolicy.builder()
       .handleCause(ArithmeticException.class)
       .maxRetryCount(3)
       .onRetry(event -> event.outcome().onFailure(actualCause::set))

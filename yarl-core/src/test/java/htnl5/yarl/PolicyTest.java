@@ -44,7 +44,7 @@ public class PolicyTest {
   public void executingAndCapturingThePolicyActionAndFailingWithAHandledExceptionTypeShouldReturnFailureResultIndicatingThatExceptionTypeIsOneHandledByThisPolicy() {
     final var handledException = new ArithmeticException();
 
-    final var result = RetryPolicy.<Void>builder()
+    final var result = RetryPolicy.builder()
       .handle(ArithmeticException.class)
       .maxRetryCount(1)
       .build()
@@ -53,7 +53,7 @@ public class PolicyTest {
       });
 
     assertThat(result.isFailureWithException()).isTrue();
-    final var failure = (PolicyResult.Failure.FailureWithException<Void>) result;
+    final var failure = (PolicyResult.Failure.FailureWithException<Object>) result;
     assertThat(failure.getFinalException()).isSameAs(handledException);
     assertThat(failure.getExceptionType()).isEqualTo(ExceptionType.HANDLED_BY_THIS_POLICY);
   }
@@ -62,7 +62,7 @@ public class PolicyTest {
   public void executingAndCapturingThePolicyActionAndFailingWithAnUnhandledExceptionTypeShouldReturnFailureResultIndicatingThatExceptionTypeIsNotHandledByThisPolicy() {
     final var unhandledException = new Exception();
 
-    final var result = RetryPolicy.<Void>builder()
+    final var result = RetryPolicy.builder()
       .handle(ArithmeticException.class)
       .maxRetryCount(1)
       .build()
@@ -71,7 +71,7 @@ public class PolicyTest {
       });
 
     assertThat(result.isFailureWithException()).isTrue();
-    final var failure = (PolicyResult.Failure.FailureWithException<Void>) result;
+    final var failure = (PolicyResult.Failure.FailureWithException<Object>) result;
     assertThat(failure.getFinalException()).isSameAs(unhandledException);
     assertThat(failure.getExceptionType()).isEqualTo(ExceptionType.UNHANDLED);
   }

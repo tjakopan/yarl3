@@ -66,7 +66,7 @@ public class CustomPolicyTest {
   @Test
   public void reactivePolicyShouldHandleException() {
     final var handled = new AtomicReference<Throwable>();
-    final var policy = AddBehaviourIfHandlePolicy.<Void>builder()
+    final var policy = AddBehaviourIfHandlePolicy.builder()
       .handle(IllegalStateException.class)
       .behaviour(outcome -> outcome.onFailure(handled::set))
       .build();
@@ -106,7 +106,7 @@ public class CustomPolicyTest {
   @Test
   public void reactivePolicyShouldBeAbleToIgnoreUnhandledException() {
     final var handled = new AtomicReference<Throwable>();
-    final var policy = AddBehaviourIfHandlePolicy.<Void>builder()
+    final var policy = AddBehaviourIfHandlePolicy.builder()
       .handle(IllegalStateException.class)
       .behaviour(outcome -> outcome.onFailure(handled::set))
       .build();
