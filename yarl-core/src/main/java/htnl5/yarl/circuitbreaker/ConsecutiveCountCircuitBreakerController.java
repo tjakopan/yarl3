@@ -50,6 +50,7 @@ class ConsecutiveCountCircuitBreakerController<R> extends CircuitBreakerStateCon
   public void onActionFailure(final DelegateResult<R> outcome, final Context context) {
     lock.lock();
     try {
+      lastOutcome = outcome;
       switch (state) {
         case CLOSED -> {
           consecutiveFailureCount += 1;
