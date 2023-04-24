@@ -1,6 +1,6 @@
 package htnl5.yarl.functions;
 
 @FunctionalInterface
-public interface CheckedSupplier<T> {
+public interface ThrowingSupplier<T> {
   T get() throws Throwable;
 }

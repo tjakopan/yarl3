@@ -18,6 +18,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
 import static htnl5.yarl.helpers.PolicyUtils.raiseException;
+import static htnl5.yarl.helpers.Threads.join;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
@@ -1383,8 +1384,8 @@ public class AdvancedCircuitBreakerTest {
     if (permitFirstExecutionEnd.tryAcquire(testTimeoutToExposeDeadlocksSec, TimeUnit.SECONDS)) {
       permitFirstExecutionEnd.release();
     }
-    var done = firstExecution.join(Duration.ofSeconds(testTimeoutToExposeDeadlocksSec));
-    done = done && secondExecution.join(Duration.ofSeconds(testTimeoutToExposeDeadlocksSec));
+    var done = join(firstExecution, Duration.ofSeconds(testTimeoutToExposeDeadlocksSec));
+    done = done && join(secondExecution, Duration.ofSeconds(testTimeoutToExposeDeadlocksSec));
     assertThat(done).isTrue();
 
     assertThat(throwable1).isInstanceOf(ArithmeticException.class);
@@ -1481,8 +1482,8 @@ public class AdvancedCircuitBreakerTest {
     if (permitFirstExecutionEnd.tryAcquire(testTimeoutToExposeDeadlocksSec, TimeUnit.SECONDS)) {
       permitFirstExecutionEnd.release();
     }
-    var done = firstExecution.join(Duration.ofSeconds(testTimeoutToExposeDeadlocksSec));
-    done = done && secondExecution.join(Duration.ofSeconds(testTimeoutToExposeDeadlocksSec));
+    var done = join(firstExecution, Duration.ofSeconds(testTimeoutToExposeDeadlocksSec));
+    done = done && join(secondExecution, Duration.ofSeconds(testTimeoutToExposeDeadlocksSec));
     assertThat(done).isTrue();
 
     assertThat(throwable1).isInstanceOf(ArithmeticException.class);
@@ -1788,7 +1789,7 @@ public class AdvancedCircuitBreakerTest {
     // Graceful cleanup: allow executions time to end naturally; timeout if any deadlocks; expose any execution
     // faults. This validates the test ran as expected (and background delegates are complete) before we assert an
     // outcome.
-    final var done = longRunningExecution.join(Duration.ofSeconds(testTimeoutToExposeDeadlocksSec));
+    final var done = join(longRunningExecution, Duration.ofSeconds(testTimeoutToExposeDeadlocksSec));
     final var state4 = breaker.getState();
     final var onBreak4 = onBreakCalled.get();
 
@@ -2325,7 +2326,7 @@ public class AdvancedCircuitBreakerTest {
     assertThat(breaker.getState()).isEqualTo(CircuitBreakerState.CLOSED);
     final var lastOutcome = breaker.getLastOutcome();
     assertThat(lastOutcome).isNotEmpty();
-    final var lastException = lastOutcome.get().fold(o -> null, Function.identity());
+    final var lastException = lastOutcome.get().match(o -> null, Function.identity());
     assertThat(lastException).isNotNull()
       .isInstanceOf(ArithmeticException.class);
   }
@@ -2348,7 +2349,7 @@ public class AdvancedCircuitBreakerTest {
     assertThat(state2).isEqualTo(CircuitBreakerState.OPEN);
     final var lastOutcome = breaker.getLastOutcome();
     assertThat(lastOutcome).isNotEmpty();
-    final var lastException = lastOutcome.get().fold(o -> null, Function.identity());
+    final var lastException = lastOutcome.get().match(o -> null, Function.identity());
     assertThat(lastException).isNotNull()
       .isInstanceOf(ArithmeticException.class);
   }
@@ -2365,11 +2366,11 @@ public class AdvancedCircuitBreakerTest {
     final var throwable2 = catchThrowable(() -> raiseException(breaker, ArithmeticException.class));
     final var state2 = breaker.getState();
     final var lastException2 = breaker.getLastOutcome()
-      .map(outcome -> outcome.fold(o -> null, Function.identity()))
+      .map(outcome -> outcome.match(o -> null, Function.identity()))
       .orElse(null);
     breaker.reset();
     final var lastException3 = breaker.getLastOutcome()
-      .map(outcome -> outcome.fold(o -> null, Function.identity()))
+      .map(outcome -> outcome.match(o -> null, Function.identity()))
       .orElse(null);
 
     assertThat(throwable1).isInstanceOf(ArithmeticException.class);

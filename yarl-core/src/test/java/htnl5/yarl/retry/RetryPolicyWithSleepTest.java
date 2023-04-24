@@ -30,7 +30,7 @@ public class RetryPolicyWithSleepTest {
       .handleResult(Result.FAULT)
       .handleResult(Result.FAULT_AGAIN)
       .maxRetryCount(2)
-      .sleepDurationProvider(event -> event.outcome().fold(expectedSleepDurations::get, e -> Duration.ZERO))
+      .sleepDurationProvider(event -> event.outcome().match(expectedSleepDurations::get, e -> Duration.ZERO))
       .onRetry(event -> actualSleepDurations.add(event.sleepDuration()))
       .sleeper(NO_OP_SLEEPER)
       .build();
@@ -358,7 +358,7 @@ public class RetryPolicyWithSleepTest {
     final var policy = RetryPolicy.builder()
       .handle(Exception.class)
       .maxRetryCount(2)
-      .sleepDurationProvider(event -> event.outcome().fold(v -> Duration.ZERO, expectedSleepDurations::get))
+      .sleepDurationProvider(event -> event.outcome().match(v -> Duration.ZERO, expectedSleepDurations::get))
       .onRetry(event -> actualSleepDurations.add(event.sleepDuration()))
       .sleeper(NO_OP_SLEEPER)
       .build();

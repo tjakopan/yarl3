@@ -150,7 +150,7 @@ abstract class CircuitBreakerStateController<R> implements ICircuitBreakerContro
     final var brokenCircuitMessage = "The circuit is now open and is not allowing calls.";
     final var lastOutcome = this.lastOutcome;
     if (lastOutcome == null) return new BrokenCircuitException(brokenCircuitMessage);
-    return lastOutcome.fold(r -> new BrokenCircuitWithResultException(brokenCircuitMessage, r),
+    return lastOutcome.match(r -> new BrokenCircuitWithResultException(brokenCircuitMessage, r),
       e -> new BrokenCircuitException(brokenCircuitMessage, e));
   }
 

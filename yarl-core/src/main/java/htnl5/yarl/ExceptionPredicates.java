@@ -9,6 +9,7 @@ public final class ExceptionPredicates {
 
   public static final ExceptionPredicates NONE = new ExceptionPredicates();
 
+  // internal
   void add(final ExceptionPredicate predicate) {
     predicates.add(predicate);
   }

@@ -3,7 +3,7 @@ package htnl5.yarl.helpers.custom.addbehaviourifhandle;
 import htnl5.yarl.Context;
 import htnl5.yarl.DelegateResult;
 import htnl5.yarl.Policy;
-import htnl5.yarl.functions.CheckedFunction;
+import htnl5.yarl.functions.ThrowingFunction;
 
 import java.util.function.Consumer;
 
@@ -21,7 +21,7 @@ public final class AddBehaviourIfHandlePolicy<R> extends Policy<R, AddBehaviourI
   }
 
   @Override
-  protected R implementation(final Context context, final CheckedFunction<Context, ? extends R> action) throws Throwable {
+  protected R implementation(final Context context, final ThrowingFunction<Context, ? extends R> action) throws Throwable {
     return AddBehaviourIfHandleEngine.implementation(action, context, getExceptionPredicates(), getResultPredicates(),
       behaviour);
   }

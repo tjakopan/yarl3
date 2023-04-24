@@ -2,7 +2,7 @@ package htnl5.yarl.helpers.custom.preexecute;
 
 import htnl5.yarl.Context;
 import htnl5.yarl.Policy;
-import htnl5.yarl.functions.CheckedFunction;
+import htnl5.yarl.functions.ThrowingFunction;
 
 public final class PreExecutePolicy<R> extends Policy<R, PreExecutePolicyBuilder<R>> {
   private final Runnable preExecute;
@@ -17,7 +17,7 @@ public final class PreExecutePolicy<R> extends Policy<R, PreExecutePolicyBuilder
   }
 
   @Override
-  protected R implementation(final Context context, final CheckedFunction<Context, ? extends R> action) throws Throwable {
+  protected R implementation(final Context context, final ThrowingFunction<Context, ? extends R> action) throws Throwable {
     return PreExecuteEngine.implementation(action, context, preExecute);
   }
 }

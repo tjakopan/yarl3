@@ -9,6 +9,7 @@ public final class ResultPredicates<R> {
 
   public static final ResultPredicates<?> NONE = new ResultPredicates<>();
 
+  // internal
   void add(final Predicate<? super R> predicate) {
     predicates.add(predicate);
   }

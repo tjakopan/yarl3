@@ -3,7 +3,7 @@ package htnl5.yarl.fallback;
 import htnl5.yarl.Context;
 import htnl5.yarl.DelegateResult;
 import htnl5.yarl.Policy;
-import htnl5.yarl.functions.CheckedFunction;
+import htnl5.yarl.functions.ThrowingFunction;
 
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
@@ -23,7 +23,7 @@ public final class FallbackPolicy<R> extends Policy<R, FallbackPolicyBuilder<R>>
   }
 
   @Override
-  protected R implementation(final Context context, final CheckedFunction<Context, ? extends R> action)
+  protected R implementation(final Context context, final ThrowingFunction<Context, ? extends R> action)
     throws Throwable {
     return FallbackEngine.implementation(action, context, exceptionPredicates, resultPredicates, onFallback,
       fallbackAction);

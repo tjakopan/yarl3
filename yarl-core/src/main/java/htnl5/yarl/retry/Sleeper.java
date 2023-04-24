@@ -4,6 +4,6 @@ import java.time.Duration;
 
 interface Sleeper {
   default void sleep(final Duration duration) throws InterruptedException {
-    Thread.sleep(duration);
+    Thread.sleep(duration.toMillis());
   }
 }

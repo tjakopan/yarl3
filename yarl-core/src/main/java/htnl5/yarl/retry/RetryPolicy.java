@@ -3,7 +3,7 @@ package htnl5.yarl.retry;
 import htnl5.yarl.Context;
 import htnl5.yarl.EventListener;
 import htnl5.yarl.Policy;
-import htnl5.yarl.functions.CheckedFunction;
+import htnl5.yarl.functions.ThrowingFunction;
 
 public final class RetryPolicy<R> extends Policy<R, RetryPolicyBuilder<R>> implements IRetryPolicy {
   private final EventListener<RetryEvent<? extends R>> onRetry;
@@ -24,7 +24,7 @@ public final class RetryPolicy<R> extends Policy<R, RetryPolicyBuilder<R>> imple
   }
 
   @Override
-  protected R implementation(final Context context, final CheckedFunction<Context, ? extends R> action)
+  protected R implementation(final Context context, final ThrowingFunction<Context, ? extends R> action)
     throws Throwable {
     return RetryEngine.implementation(action, context, exceptionPredicates, resultPredicates, onRetry, maxRetryCount,
       sleepDurationProvider, sleeper);

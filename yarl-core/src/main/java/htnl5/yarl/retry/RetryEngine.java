@@ -1,7 +1,7 @@
 package htnl5.yarl.retry;
 
 import htnl5.yarl.*;
-import htnl5.yarl.functions.CheckedFunction;
+import htnl5.yarl.functions.ThrowingFunction;
 
 final class RetryEngine {
   private RetryEngine() {
@@ -15,7 +15,7 @@ final class RetryEngine {
     return exceptionPredicates.firstMatchOrEmpty(e).isPresent();
   }
 
-  static <R> R implementation(final CheckedFunction<Context, ? extends R> action, final Context context,
+  static <R> R implementation(final ThrowingFunction<Context, ? extends R> action, final Context context,
                               final ExceptionPredicates exceptionPredicates, final ResultPredicates<R> resultPredicates,
                               final EventListener<RetryEvent<? extends R>> onRetry, final int maxRetryCount,
                               final SleepDurationProvider<? super R> sleepDurationProvider, final Sleeper sleeper)
@@ -25,18 +25,16 @@ final class RetryEngine {
     while (true) {
       final var outcome =
         DelegateResult.runCatching(exceptionPredicates, () -> (R) action.apply(context));
-      switch (outcome) {
-        case DelegateResult.Success<R> s -> {
-          if (!shouldHandleResult(s.getResult(), resultPredicates)) {
-            return s.getResult();
-          }
+      if (outcome instanceof DelegateResult.Success<R> s) {
+        if (!shouldHandleResult(s.getResult(), resultPredicates)) {
+          return s.getResult();
         }
-        case DelegateResult.Failure<R> f -> {
-          if (!shouldHandleException(f.getException(), exceptionPredicates)) {
-            throw f.getException();
-          }
+      } else if (outcome instanceof DelegateResult.Failure<R> f) {
+        if (!shouldHandleException(f.getException(), exceptionPredicates)) {
+          throw f.getException();
         }
-        default -> throw new IllegalStateException("Unexpected value: " + outcome);
+      } else {
+        throw new IllegalStateException("Unexpected value: " + outcome);
       }
 
       final var canRetry = tryCount < maxRetryCount;
@@ -49,7 +47,7 @@ final class RetryEngine {
       final var sleepDuration =
         sleepDurationProvider.apply(new SleepDurationEvent<>(tryCount, outcome, context));
       onRetry.accept(new RetryEvent<>(outcome, sleepDuration, tryCount, context));
-      if (sleepDuration.isPositive()) {
+      if (!sleepDuration.isNegative() && !sleepDuration.isZero()) {
         sleeper.sleep(sleepDuration);
       }
     }

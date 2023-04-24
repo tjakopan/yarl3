@@ -35,16 +35,18 @@ public sealed class PolicyResult<R> {
     return this instanceof Failure.FailureWithResult<R>;
   }
 
-  public <T> T fold(final BiFunction<? super R, Context, ? extends T> ifSuccess,
-                    final Function3<? super Throwable, ExceptionType, Context, ? extends T> ifFailureWithException,
-                    final BiFunction<? super R, Context, ? extends T> ifFailureWithResult) {
-    return switch (this) {
-      case Success<R> s -> ifSuccess.apply(s.getResult(), getContext());
-      case Failure.FailureWithException<R> fe ->
-        ifFailureWithException.apply(fe.getFinalException(), fe.getExceptionType(), getContext());
-      case Failure.FailureWithResult<R> fr -> ifFailureWithResult.apply(fr.getFinalHandledResult(), getContext());
-      default -> throw new IllegalStateException("Unexpected value: " + this);
-    };
+  public <T> T match(final BiFunction<? super R, Context, ? extends T> success,
+                     final Function3<? super Throwable, ExceptionType, Context, ? extends T> failureWithException,
+                     final BiFunction<? super R, Context, ? extends T> failureWithResult) {
+    if (this instanceof PolicyResult.Success<R> s) {
+      return success.apply(s.getResult(), getContext());
+    } else if (this instanceof Failure.FailureWithException<R> fe) {
+      return failureWithException.apply(fe.getFinalException(), fe.getExceptionType(), getContext());
+    } else if (this instanceof Failure.FailureWithResult<R> fr) {
+      return failureWithResult.apply(fr.getFinalHandledResult(), getContext());
+    } else {
+      throw new IllegalStateException("Unexpected value: " + this);
+    }
   }
 
   public PolicyResult<R> onSuccess(final BiConsumer<? super R, Context> action) {

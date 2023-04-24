@@ -4,7 +4,7 @@ import htnl5.yarl.Context;
 import htnl5.yarl.DelegateResult;
 import htnl5.yarl.Policy;
 import htnl5.yarl.PolicyBuilderBase;
-import htnl5.yarl.functions.CheckedFunction;
+import htnl5.yarl.functions.ThrowingFunction;
 
 import java.util.Optional;
 
@@ -39,7 +39,7 @@ public abstract class CircuitBreakerPolicyBase<R, B extends CircuitBreakerPolicy
   }
 
   @Override
-  protected R implementation(final Context context, final CheckedFunction<Context, ? extends R> action)
+  protected R implementation(final Context context, final ThrowingFunction<Context, ? extends R> action)
     throws Throwable {
     return CircuitBreakerEngine.implementation(action, context, exceptionPredicates, resultPredicates, controller);
   }

@@ -22,10 +22,12 @@ public final class Context implements Map<String, Object> {
     this(operationKey, new HashMap<>());
   }
 
+  // internal
   Context(final Map<String, Object> contextData) {
     this(null, contextData);
   }
 
+  // internal
   public static Context none() {
     return new Context();
   }
@@ -47,6 +49,7 @@ public final class Context implements Map<String, Object> {
     return Optional.ofNullable(policyKey);
   }
 
+  // internal
   void setPolicyKey(final String policyKey) {
     this.policyKey = policyKey;
   }

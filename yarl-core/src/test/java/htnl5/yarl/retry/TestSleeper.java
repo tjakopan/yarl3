@@ -13,6 +13,6 @@ public class TestSleeper implements Sleeper {
   @Override
   public void sleep(final Duration duration) throws InterruptedException {
     onSleep.accept(duration);
-    Thread.sleep(Duration.ZERO);
+    Thread.sleep(Duration.ZERO.toMillis());
   }
 }

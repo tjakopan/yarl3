@@ -1,6 +1,6 @@
 package htnl5.yarl;
 
-import htnl5.yarl.functions.CheckedSupplier;
+import htnl5.yarl.functions.ThrowingSupplier;
 
 import java.util.concurrent.CancellationException;
 import java.util.function.Consumer;
@@ -16,13 +16,15 @@ public sealed class DelegateResult<R> {
     return this instanceof DelegateResult.Failure<R>;
   }
 
-  public <T> T fold(final Function<? super R, ? extends T> ifSuccess,
-                    final Function<? super Throwable, ? extends T> ifFailure) {
-    return switch (this) {
-      case Success<R> s -> ifSuccess.apply(s.getResult());
-      case Failure<R> f -> ifFailure.apply(f.getException());
-      default -> throw new IllegalStateException("Unexpected value: " + this);
-    };
+  public <T> T match(final Function<? super R, ? extends T> success,
+                     final Function<? super Throwable, ? extends T> failure) {
+    if (this instanceof DelegateResult.Success<R> s) {
+      return success.apply(s.getResult());
+    } else if (this instanceof DelegateResult.Failure<R> f) {
+      return failure.apply(f.getException());
+    } else {
+      throw new IllegalArgumentException("Unexpected value: " + this);
+    }
   }
 
   public DelegateResult<R> onSuccess(final Consumer<? super R> action) {
@@ -36,12 +38,16 @@ public sealed class DelegateResult<R> {
   }
 
   public R getOrThrow() throws Throwable {
-    return switch (this) {
-      case Success<R> s -> s.getResult();
-      case Failure<R> f -> throw f.getException();
-      default -> throw new IllegalStateException("Unexpected value: " + this);
-    };
+    if (this instanceof DelegateResult.Success<R> s) {
+      return s.getResult();
+    } else if (this instanceof DelegateResult.Failure<R> f) {
+      throw f.getException();
+    } else {
+      throw new IllegalArgumentException("Unexpected value: " + this);
+    }
   }
+
+
 
   public static <R> DelegateResult<R> success(final R result) {
     return new Success<>(result);
@@ -52,7 +58,7 @@ public sealed class DelegateResult<R> {
   }
 
   public static <R> DelegateResult<R> runCatching(final ExceptionPredicates exceptionPredicates,
-                                                  final CheckedSupplier<? extends R> block) {
+                                                  final ThrowingSupplier<? extends R> block) {
     try {
       return success(block.get());
     } catch (final CancellationException e) {

@@ -3,7 +3,7 @@ package htnl5.yarl.wrap;
 import htnl5.yarl.Context;
 import htnl5.yarl.ISyncPolicy;
 import htnl5.yarl.Policy;
-import htnl5.yarl.functions.CheckedFunction;
+import htnl5.yarl.functions.ThrowingFunction;
 
 public final class PolicyWrap<R> extends Policy<R, PolicyWrapBuilder<R>> implements IPolicyWrap {
   private final ISyncPolicy<R> outer;
@@ -48,7 +48,7 @@ public final class PolicyWrap<R> extends Policy<R, PolicyWrapBuilder<R>> impleme
   }
 
   @Override
-  public R execute(final Context context, final CheckedFunction<Context, ? extends R> action) throws Throwable {
+  public R execute(final Context context, final ThrowingFunction<Context, ? extends R> action) throws Throwable {
     final var priorPolicyWrapKey = context.getPolicyWrapKey().orElse(null);
     if (context.getPolicyWrapKey().isEmpty()) context.setPolicyWrapKey(getPolicyKey());
     try {
@@ -59,7 +59,7 @@ public final class PolicyWrap<R> extends Policy<R, PolicyWrapBuilder<R>> impleme
   }
 
   @Override
-  protected R implementation(final Context context, final CheckedFunction<Context, ? extends R> action)
+  protected R implementation(final Context context, final ThrowingFunction<Context, ? extends R> action)
     throws Throwable {
     return PolicyWrapEngine.implementation(action, context, outer, inner);
   }

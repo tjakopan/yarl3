@@ -1,6 +1,6 @@
 package htnl5.yarl;
 
-import htnl5.yarl.functions.CheckedFunction;
+import htnl5.yarl.functions.ThrowingFunction;
 
 import java.util.Objects;
 
@@ -10,7 +10,7 @@ public abstract class Policy<R, B extends PolicyBuilderBase<R, B>> extends Polic
   }
 
   @Override
-  public R execute(final Context context, final CheckedFunction<Context, ? extends R> action) throws Throwable {
+  public R execute(final Context context, final ThrowingFunction<Context, ? extends R> action) throws Throwable {
     Objects.requireNonNull(context, "context must not be null.");
     final var priorPolicyKey = context.getPolicyKey().orElse(null);
     context.setPolicyKey(policyKey);
@@ -22,7 +22,7 @@ public abstract class Policy<R, B extends PolicyBuilderBase<R, B>> extends Polic
   }
 
   @Override
-  public PolicyResult<R> executeAndCapture(final Context context, final CheckedFunction<Context, ? extends R> action) {
+  public PolicyResult<R> executeAndCapture(final Context context, final ThrowingFunction<Context, ? extends R> action) {
     Objects.requireNonNull(context, "context must not be null.");
     try {
       final var result = execute(context, action);
@@ -33,6 +33,6 @@ public abstract class Policy<R, B extends PolicyBuilderBase<R, B>> extends Polic
     }
   }
 
-  protected abstract R implementation(final Context context, final CheckedFunction<Context, ? extends R> action)
+  protected abstract R implementation(final Context context, final ThrowingFunction<Context, ? extends R> action)
     throws Throwable;
 }
