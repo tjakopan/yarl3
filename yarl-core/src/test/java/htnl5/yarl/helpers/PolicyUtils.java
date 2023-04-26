@@ -103,7 +103,7 @@ public final class PolicyUtils {
       if (!iterator.hasNext())
         throw new ArrayIndexOutOfBoundsException("Not enough values in resultsOrExceptionsToRaise.");
       final var current = iterator.next();
-      if (current instanceof Throwable) throw (Throwable) current;
+      if (current instanceof Throwable e) throw e;
       else if (resultClass.isInstance(current))
         //noinspection unchecked
         return (R) current;

@@ -11,7 +11,7 @@ import java.util.function.Consumer;
 public sealed class PolicyResult<R> {
   private final Context context;
 
-  public PolicyResult(final Context context) {
+  private PolicyResult(final Context context) {
     this.context = context;
   }
 

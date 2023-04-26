@@ -6,7 +6,7 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 // producer of B
-public abstract class PolicyBuilder<R, B extends PolicyBuilder<R, B>> extends PolicyBuilderBase<R, B> {
+public abstract class PolicyBuilder<R, B extends PolicyBuilderBase<R, B>> extends PolicyBuilderBase<R, B> {
   public B handle(final Class<? extends Throwable> exceptionClass) {
     exceptionPredicates.add(e -> {
       if (exceptionClass.isInstance(e)) return Optional.of(e);
@@ -37,7 +37,7 @@ public abstract class PolicyBuilder<R, B extends PolicyBuilder<R, B>> extends Po
     return self();
   }
 
-  ExceptionPredicate causePredicate(final Predicate<Throwable> predicate) {
+  private ExceptionPredicate causePredicate(final Predicate<? super Throwable> predicate) {
     return e -> Stream.iterate(e, Objects::nonNull, Throwable::getCause)
       .filter(predicate)
       .findFirst();

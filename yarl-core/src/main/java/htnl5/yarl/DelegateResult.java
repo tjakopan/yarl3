@@ -2,12 +2,16 @@ package htnl5.yarl;
 
 import htnl5.yarl.functions.ThrowingSupplier;
 
-import java.util.concurrent.CancellationException;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 // producer
 public sealed class DelegateResult<R> {
+  private DelegateResult() {
+  }
+
   public boolean isSuccess() {
     return this instanceof DelegateResult.Success<R>;
   }
@@ -27,6 +31,10 @@ public sealed class DelegateResult<R> {
     }
   }
 
+  public CompletableFuture<R> toCompletableFuture() {
+    return match(CompletableFuture::completedFuture, CompletableFuture::failedFuture);
+  }
+
   public DelegateResult<R> onSuccess(final Consumer<? super R> action) {
     if (isSuccess()) action.accept(((Success<R>) this).getResult());
     return this;
@@ -43,11 +51,9 @@ public sealed class DelegateResult<R> {
     } else if (this instanceof DelegateResult.Failure<R> f) {
       throw f.getException();
     } else {
-      throw new IllegalArgumentException("Unexpected value: " + this);
+      throw new IllegalStateException("Unexpected value: " + this);
     }
   }
-
-
 
   public static <R> DelegateResult<R> success(final R result) {
     return new Success<>(result);
@@ -57,12 +63,20 @@ public sealed class DelegateResult<R> {
     return new Failure<>(exception);
   }
 
+  public static <R> DelegateResult<R> delegateResult(final R result, final Throwable exception) {
+    if (exception instanceof CompletionException ce && ce.getCause() != null) {
+      return failure(ce.getCause());
+    }
+    if (exception != null) {
+      return failure(exception);
+    }
+    return success(result);
+  }
+
   public static <R> DelegateResult<R> runCatching(final ExceptionPredicates exceptionPredicates,
                                                   final ThrowingSupplier<? extends R> block) {
     try {
       return success(block.get());
-    } catch (final CancellationException e) {
-      throw e;
     } catch (final Throwable e) {
       return exceptionPredicates.firstMatchOrEmpty(e)
         .<DelegateResult<R>>map(DelegateResult::failure)
