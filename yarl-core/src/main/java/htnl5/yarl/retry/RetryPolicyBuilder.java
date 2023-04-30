@@ -1,10 +1,13 @@
 package htnl5.yarl.retry;
 
 import htnl5.yarl.EventListener;
+import htnl5.yarl.IBuildable;
 
 import java.util.Objects;
 
-public final class RetryPolicyBuilder<R> extends RetryPolicyBuilderBase<R, RetryPolicyBuilder<R>> {
+public final class RetryPolicyBuilder<R>
+  extends RetryPolicyBuilderBase<R, RetryPolicyBuilder<R>>
+  implements IBuildable<RetryPolicy<R>> {
   private EventListener<RetryEvent<? extends R>> onRetry = event -> {
   };
   private Sleeper sleeper = new Sleeper() {
@@ -17,7 +20,7 @@ public final class RetryPolicyBuilder<R> extends RetryPolicyBuilderBase<R, Retry
   public RetryPolicyBuilder<R> onRetry(final EventListener<RetryEvent<? extends R>> onRetry) {
     Objects.requireNonNull(onRetry, "onRetry must not be null.");
     this.onRetry = onRetry;
-    return self();
+    return this;
   }
 
   Sleeper getSleeper() {
@@ -27,7 +30,7 @@ public final class RetryPolicyBuilder<R> extends RetryPolicyBuilderBase<R, Retry
   RetryPolicyBuilder<R> sleeper(final Sleeper sleeper) {
     Objects.requireNonNull(sleeper, "sleeper must not be null.");
     this.sleeper = sleeper;
-    return self();
+    return this;
   }
 
   @Override
@@ -36,7 +39,7 @@ public final class RetryPolicyBuilder<R> extends RetryPolicyBuilderBase<R, Retry
   }
 
   @Override
-  protected RetryPolicyBuilder<R> self() {
+  public RetryPolicyBuilder<R> self() {
     return this;
   }
 }

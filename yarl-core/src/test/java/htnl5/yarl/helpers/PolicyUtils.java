@@ -1,7 +1,8 @@
 package htnl5.yarl.helpers;
 
 import htnl5.yarl.Context;
-import htnl5.yarl.Policy;
+import htnl5.yarl.IReactiveSyncPolicy;
+import htnl5.yarl.ISyncPolicy;
 import htnl5.yarl.PolicyResult;
 
 import java.lang.reflect.InvocationTargetException;
@@ -15,7 +16,7 @@ public final class PolicyUtils {
   }
 
   @SafeVarargs
-  public static <R> R raiseResults(final Policy<R, ?> policy, final R... resultsToRaise) throws Throwable {
+  public static <R> R raiseResults(final ISyncPolicy<R> policy, final R... resultsToRaise) throws Throwable {
     final var iterator = Stream.of(resultsToRaise).iterator();
     return policy.execute(() -> {
       if (!iterator.hasNext()) throw new ArrayIndexOutOfBoundsException("Not enough values in resultsToRaise.");
@@ -24,7 +25,7 @@ public final class PolicyUtils {
   }
 
   @SafeVarargs
-  public static <R> R raiseResults(final Policy<R, ?> policy, final Context context, final R... resultsToRaise)
+  public static <R> R raiseResults(final ISyncPolicy<R> policy, final Context context, final R... resultsToRaise)
     throws Throwable {
     final var iterator = Stream.of(resultsToRaise).iterator();
     return policy.execute(context, ctx -> {
@@ -34,7 +35,7 @@ public final class PolicyUtils {
   }
 
   @SafeVarargs
-  public static <R> R raiseResults(final Policy<R, ?> policy, final Map<String, Object> contextData,
+  public static <R> R raiseResults(final ISyncPolicy<R> policy, final Map<String, Object> contextData,
                                    final R... resultsToRaise) throws Throwable {
     final var iterator = Stream.of(resultsToRaise).iterator();
     return policy.execute(contextData, ctx -> {
@@ -44,7 +45,7 @@ public final class PolicyUtils {
   }
 
   @SafeVarargs
-  public static <R> PolicyResult<R> raiseResultsOnExecuteAndCapture(final Policy<R, ?> policy,
+  public static <R> PolicyResult<R> raiseResultsOnExecuteAndCapture(final IReactiveSyncPolicy<R> policy,
                                                                     final Map<String, Object> contextData,
                                                                     final R... resultsToRaise) {
     final var iterator = Stream.of(resultsToRaise).iterator();
@@ -54,7 +55,7 @@ public final class PolicyUtils {
     });
   }
 
-  public static <E extends Exception> void raiseExceptions(final Policy<?, ?> policy,
+  public static <E extends Exception> void raiseExceptions(final ISyncPolicy<?> policy,
                                                            final int numberOfTimesToRaiseException,
                                                            final Function<Integer, ? extends E> exceptionSupplier)
     throws Throwable {
@@ -66,7 +67,7 @@ public final class PolicyUtils {
     });
   }
 
-  public static <E extends Exception> void raiseExceptions(final Policy<?, ?> policy,
+  public static <E extends Exception> void raiseExceptions(final ISyncPolicy<?> policy,
                                                            final int numberOfTimesToRaiseException,
                                                            final Class<? extends E> exceptionClass)
     throws Throwable {
@@ -79,7 +80,7 @@ public final class PolicyUtils {
     });
   }
 
-  public static <E extends Exception> void raiseException(final Policy<?, ?> policy,
+  public static <E extends Exception> void raiseException(final ISyncPolicy<?> policy,
                                                           final Class<? extends E> exceptionClass)
     throws Throwable {
     policy.execute(() -> {
@@ -87,7 +88,7 @@ public final class PolicyUtils {
     });
   }
 
-  public static <E extends Exception> void raiseException(final Policy<?, ?> policy,
+  public static <E extends Exception> void raiseException(final ISyncPolicy<?> policy,
                                                           final Map<String, Object> contextData,
                                                           final Class<? extends E> exceptionClass)
     throws Throwable {
@@ -96,7 +97,7 @@ public final class PolicyUtils {
     });
   }
 
-  public static <R> R raiseResultsAndOrExceptions(final Policy<R, ?> policy, final Class<? extends R> resultClass,
+  public static <R> R raiseResultsAndOrExceptions(final ISyncPolicy<R> policy, final Class<? extends R> resultClass,
                                                   final Object... resultsOrExceptionsToRaise) throws Throwable {
     final var iterator = Stream.of(resultsOrExceptionsToRaise).iterator();
     return policy.execute(() -> {

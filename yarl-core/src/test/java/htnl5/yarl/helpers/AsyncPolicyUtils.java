@@ -1,6 +1,6 @@
 package htnl5.yarl.helpers;
 
-import htnl5.yarl.AsyncPolicy;
+import htnl5.yarl.IAsyncPolicy;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
@@ -10,7 +10,7 @@ public final class AsyncPolicyUtils {
   }
 
   @SafeVarargs
-  public static <R> CompletableFuture<R> raiseResults(final AsyncPolicy<R, ?> policy, final R... resultsToRaise) {
+  public static <R> CompletableFuture<R> raiseResults(final IAsyncPolicy<R> policy, final R... resultsToRaise) {
     final var iterator = Stream.of(resultsToRaise).iterator();
     return policy.execute(() -> {
       if (!iterator.hasNext())
@@ -20,7 +20,7 @@ public final class AsyncPolicyUtils {
     });
   }
 
-  public static <R> CompletableFuture<R> raiseResultsAndOrExceptions(final AsyncPolicy<R, ?> policy,
+  public static <R> CompletableFuture<R> raiseResultsAndOrExceptions(final IAsyncPolicy<R> policy,
                                                                      final Class<? extends R> resultClass,
                                                                      final Object... resultsOrExceptionsToRaise) {
     final var iterator = Stream.of(resultsOrExceptionsToRaise).iterator();

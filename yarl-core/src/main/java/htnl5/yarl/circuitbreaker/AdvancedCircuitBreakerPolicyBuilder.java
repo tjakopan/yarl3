@@ -1,9 +1,12 @@
 package htnl5.yarl.circuitbreaker;
 
+import htnl5.yarl.IBuildable;
+
 import java.time.Duration;
 
 public final class AdvancedCircuitBreakerPolicyBuilder<R>
-  extends CircuitBreakerPolicyBuilderBase<R, AdvancedCircuitBreakerPolicyBuilder<R>> {
+  extends CircuitBreakerPolicyBuilderBase<R, AdvancedCircuitBreakerPolicyBuilder<R>>
+  implements IBuildable<CircuitBreakerPolicy<R, AdvancedCircuitBreakerPolicyBuilder<R>>> {
   private final double failureThreshold;
 
   private final Duration samplingDuration;
@@ -56,7 +59,7 @@ public final class AdvancedCircuitBreakerPolicyBuilder<R>
   }
 
   @Override
-  protected AdvancedCircuitBreakerPolicyBuilder<R> self() {
+  public AdvancedCircuitBreakerPolicyBuilder<R> self() {
     return this;
   }
 }

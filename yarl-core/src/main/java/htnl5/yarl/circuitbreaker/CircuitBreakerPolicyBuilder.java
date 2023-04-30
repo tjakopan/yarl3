@@ -1,10 +1,13 @@
 package htnl5.yarl.circuitbreaker;
 
+import htnl5.yarl.IBuildable;
+
 import java.time.Duration;
 import java.util.Objects;
 
 public final class CircuitBreakerPolicyBuilder<R>
-  extends CircuitBreakerPolicyBuilderBase<R, CircuitBreakerPolicyBuilder<R>> {
+  extends CircuitBreakerPolicyBuilderBase<R, CircuitBreakerPolicyBuilder<R>>
+  implements IBuildable<CircuitBreakerPolicy<R, CircuitBreakerPolicyBuilder<R>>> {
   private int failuresAllowedBeforeBreaking = 1;
 
   private Duration durationOfBreak = Duration.ofMinutes(1);
@@ -40,7 +43,7 @@ public final class CircuitBreakerPolicyBuilder<R>
   }
 
   @Override
-  protected CircuitBreakerPolicyBuilder<R> self() {
+  public CircuitBreakerPolicyBuilder<R> self() {
     return this;
   }
 }

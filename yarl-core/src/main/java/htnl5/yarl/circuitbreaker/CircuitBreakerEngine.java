@@ -16,20 +16,13 @@ final class CircuitBreakerEngine {
     controller.onActionPreExecute();
 
     final var outcome = DelegateResult.runCatching(exceptionPredicates, () -> (R) action.apply(context));
-    if (outcome instanceof DelegateResult.Success<R> s) {
-      if (resultPredicates.anyMatch(s.getResult())) {
-        controller.onActionFailure(outcome, context);
-      } else {
-        controller.onActionSuccess(context);
-      }
-      return s.getResult();
-    } else if (outcome instanceof DelegateResult.Failure<R> f) {
-      final var handledException = exceptionPredicates.firstMatchOrEmpty(f.getException()).orElse(null);
-      if (handledException == null) throw f.getException();
-      controller.onActionFailure(outcome, context);
-      throw handledException;
+    final var shouldHandle = outcome.shouldHandle(resultPredicates, exceptionPredicates);
+    if (shouldHandle) {
+      outcome.onSuccess(r -> controller.onActionFailure(outcome, context))
+        .onFailure(e -> controller.onActionFailure(outcome, context));
     } else {
-      throw new IllegalStateException("Unexpected value: " + outcome);
+      outcome.onSuccess(r -> controller.onActionSuccess(context));
     }
+    return outcome.getOrThrow();
   }
 }

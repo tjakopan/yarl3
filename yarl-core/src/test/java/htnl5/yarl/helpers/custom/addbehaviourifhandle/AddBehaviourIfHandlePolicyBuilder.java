@@ -1,13 +1,27 @@
 package htnl5.yarl.helpers.custom.addbehaviourifhandle;
 
-import htnl5.yarl.DelegateResult;
-import htnl5.yarl.PolicyBuilder;
+import htnl5.yarl.*;
 
 import java.util.function.Consumer;
 
-public final class AddBehaviourIfHandlePolicyBuilder<R> extends PolicyBuilder<R, AddBehaviourIfHandlePolicyBuilder<R>> {
+public final class AddBehaviourIfHandlePolicyBuilder<R>
+  extends PolicyBuilder<AddBehaviourIfHandlePolicyBuilder<R>>
+  implements IReactivePolicyBuilder<R, AddBehaviourIfHandlePolicyBuilder<R>>,
+  IBuildable<AddBehaviourIfHandlePolicy<R>> {
+  private final ResultPredicates<R> resultPredicates = ResultPredicates.none();
+  private final ExceptionPredicates exceptionPredicates = ExceptionPredicates.none();
   private Consumer<DelegateResult<? extends R>> behaviour = outcome -> {
   };
+
+  @Override
+  public ResultPredicates<R> getResultPredicates() {
+    return resultPredicates;
+  }
+
+  @Override
+  public ExceptionPredicates getExceptionPredicates() {
+    return exceptionPredicates;
+  }
 
   Consumer<DelegateResult<? extends R>> getBehaviour() {
     return behaviour;
@@ -24,7 +38,7 @@ public final class AddBehaviourIfHandlePolicyBuilder<R> extends PolicyBuilder<R,
   }
 
   @Override
-  protected AddBehaviourIfHandlePolicyBuilder<R> self() {
+  public AddBehaviourIfHandlePolicyBuilder<R> self() {
     return this;
   }
 }

@@ -20,6 +20,17 @@ public sealed class DelegateResult<R> {
     return this instanceof DelegateResult.Failure<R>;
   }
 
+  public <T> DelegateResult<T> map(final Function<? super R, ? extends T> success,
+                                   final Function<? super Throwable, ? extends Throwable> failure) {
+    if (this instanceof DelegateResult.Success<R> s) {
+      return success(success.apply(s.getResult()));
+    } else if (this instanceof DelegateResult.Failure<R> f) {
+      return failure(failure.apply(f.getException()));
+    } else {
+      throw new IllegalStateException("Unexpected value: " + this);
+    }
+  }
+
   public <T> T match(final Function<? super R, ? extends T> success,
                      final Function<? super Throwable, ? extends T> failure) {
     if (this instanceof DelegateResult.Success<R> s) {
@@ -27,8 +38,13 @@ public sealed class DelegateResult<R> {
     } else if (this instanceof DelegateResult.Failure<R> f) {
       return failure.apply(f.getException());
     } else {
-      throw new IllegalArgumentException("Unexpected value: " + this);
+      throw new IllegalStateException("Unexpected value: " + this);
     }
+  }
+
+  public boolean shouldHandle(final ResultPredicates<R> resultPredicates,
+                              final ExceptionPredicates exceptionPredicates) {
+    return match(resultPredicates::anyMatch, e -> exceptionPredicates.firstMatchOrEmpty(e).isPresent());
   }
 
   public CompletableFuture<R> toCompletableFuture() {

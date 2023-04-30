@@ -1,11 +1,13 @@
 package htnl5.yarl.circuitbreaker;
 
+import htnl5.yarl.IReactiveSyncPolicy;
+
 import java.time.Duration;
 
 public final class CircuitBreakerPolicy<R, B extends CircuitBreakerPolicyBuilderBase<R, B>>
-  extends CircuitBreakerPolicyBase<R, B> implements ICircuitBreakerPolicy {
-  CircuitBreakerPolicy(final CircuitBreakerPolicyBuilderBase<R, B> policyBuilder,
-                       final ICircuitBreakerController<R> controller) {
+  extends CircuitBreakerPolicyBase<R, B>
+  implements IReactiveSyncPolicy<R> {
+  CircuitBreakerPolicy(final B policyBuilder, final ICircuitBreakerController<R> controller) {
     super(policyBuilder, controller);
   }
 

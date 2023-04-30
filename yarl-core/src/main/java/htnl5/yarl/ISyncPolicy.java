@@ -17,17 +17,16 @@ public interface ISyncPolicy<R> extends IPolicy {
     return execute(new Context(contextData), action);
   }
 
-  R execute(final Context context, final ThrowingFunction<Context, ? extends R> action) throws Throwable;
-
-  default PolicyResult<R> executeAndCapture(final ThrowingSupplier<? extends R> action) {
-    return executeAndCapture(Context.none(), ctx -> action.get());
+  default R execute(final Context context, final ThrowingFunction<Context, ? extends R> action) throws Throwable {
+    Objects.requireNonNull(context, "context must not be null.");
+    final var priorPolicyKey = context.getPolicyKey().orElse(null);
+    context.setPolicyKey(getPolicyKey());
+    try {
+      return implementation(context, action);
+    } finally {
+      context.setPolicyKey(priorPolicyKey);
+    }
   }
 
-  default PolicyResult<R> executeAndCapture(final Map<String, Object> contextData,
-                                            final ThrowingFunction<Context, ? extends R> action) {
-    Objects.requireNonNull(contextData, "contextData must not be null.");
-    return executeAndCapture(new Context(contextData), action);
-  }
-
-  PolicyResult<R> executeAndCapture(final Context context, final ThrowingFunction<Context, ? extends R> action);
+  R implementation(final Context context, final ThrowingFunction<Context, ? extends R> action) throws Throwable;
 }

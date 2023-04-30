@@ -160,13 +160,13 @@ public class PolicyTest {
   }
 
   @Test
-  public void executingAndCapturingThePolicyActionShouldPassContextToExecutedAction() {
+  public void executingAndCapturingThePolicyActionShouldPassContextToExecutedAction() throws Throwable {
     final var operationKey = "SomeKey";
     final var executionContext = new Context(operationKey);
     final var capturedContext = new AtomicReference<Context>();
     final var policy = NoOpPolicy.<Result>build();
 
-    policy.executeAndCapture(executionContext, ctx -> {
+    policy.execute(executionContext, ctx -> {
       capturedContext.set(ctx);
       return Result.GOOD;
     });

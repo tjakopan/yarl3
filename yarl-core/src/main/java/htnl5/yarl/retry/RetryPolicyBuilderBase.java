@@ -1,15 +1,32 @@
 package htnl5.yarl.retry;
 
+import htnl5.yarl.ExceptionPredicates;
+import htnl5.yarl.IReactivePolicyBuilder;
 import htnl5.yarl.PolicyBuilder;
+import htnl5.yarl.ResultPredicates;
 
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.StreamSupport;
 
-public abstract class RetryPolicyBuilderBase<R, B extends RetryPolicyBuilderBase<R, B>> extends PolicyBuilder<R, B> {
+public abstract class RetryPolicyBuilderBase<R, B extends RetryPolicyBuilderBase<R, B>>
+  extends PolicyBuilder<B>
+  implements IReactivePolicyBuilder<R, B> {
+  private final ResultPredicates<R> resultPredicates = ResultPredicates.none();
+  private final ExceptionPredicates exceptionPredicates = ExceptionPredicates.none();
   private int maxRetryCount = 3;
   private SleepDurationProvider<R> sleepDurationProvider = event -> Duration.ZERO;
+
+  @Override
+  public ResultPredicates<R> getResultPredicates() {
+    return resultPredicates;
+  }
+
+  @Override
+  public ExceptionPredicates getExceptionPredicates() {
+    return exceptionPredicates;
+  }
 
   int getMaxRetryCount() {
     return maxRetryCount;

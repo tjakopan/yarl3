@@ -1,25 +1,33 @@
 package htnl5.yarl.circuitbreaker;
 
-import htnl5.yarl.Context;
-import htnl5.yarl.EventListener;
-import htnl5.yarl.PolicyBuilder;
+import htnl5.yarl.*;
 
 import java.time.Clock;
 import java.util.Objects;
 import java.util.function.Consumer;
 
 public abstract class CircuitBreakerPolicyBuilderBase<R, B extends CircuitBreakerPolicyBuilderBase<R, B>>
-  extends PolicyBuilder<R, B> {
+  extends PolicyBuilder<B>
+  implements IReactivePolicyBuilder<R, B> {
+  private final ResultPredicates<R> resultPredicates = ResultPredicates.none();
+  private final ExceptionPredicates exceptionPredicates = ExceptionPredicates.none();
   private Clock clock = Clock.systemUTC();
-
   private EventListener<BreakEvent<? extends R>> onBreak = event -> {
   };
-
   private Consumer<Context> onReset = ctx -> {
   };
-
   private Runnable onHalfOpen = () -> {
   };
+
+  @Override
+  public ResultPredicates<R> getResultPredicates() {
+    return resultPredicates;
+  }
+
+  @Override
+  public ExceptionPredicates getExceptionPredicates() {
+    return exceptionPredicates;
+  }
 
   Clock getClock() {
     return clock;

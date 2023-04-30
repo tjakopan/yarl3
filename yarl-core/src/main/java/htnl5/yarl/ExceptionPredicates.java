@@ -7,7 +7,9 @@ import java.util.Optional;
 public final class ExceptionPredicates {
   private final List<ExceptionPredicate> predicates = new ArrayList<>();
 
-  public static final ExceptionPredicates NONE = new ExceptionPredicates();
+  public static ExceptionPredicates none() {
+    return new ExceptionPredicates();
+  }
 
   // internal
   void add(final ExceptionPredicate predicate) {

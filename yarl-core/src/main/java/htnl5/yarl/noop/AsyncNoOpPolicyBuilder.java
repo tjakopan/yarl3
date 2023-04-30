@@ -1,10 +1,13 @@
 package htnl5.yarl.noop;
 
-import htnl5.yarl.PolicyBuilderBase;
+import htnl5.yarl.IBuildable;
+import htnl5.yarl.PolicyBuilder;
 
-public final class AsyncNoOpPolicyBuilder<R> extends PolicyBuilderBase<R, AsyncNoOpPolicyBuilder<R>> {
+public final class AsyncNoOpPolicyBuilder<R>
+  extends PolicyBuilder<AsyncNoOpPolicyBuilder<R>>
+  implements IBuildable<AsyncNoOpPolicy<R>> {
   @Override
-  protected AsyncNoOpPolicyBuilder<R> self() {
+  public AsyncNoOpPolicyBuilder<R> self() {
     return this;
   }
 

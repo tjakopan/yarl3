@@ -19,13 +19,9 @@ final class FallbackEngine {
                               final BiFunction<DelegateResult<? extends R>, Context, ? extends R> fallbackAction)
     throws Throwable {
     final var outcome = DelegateResult.runCatching(exceptionPredicates, () -> (R) action.apply(context));
-    if (outcome instanceof DelegateResult.Success<R> s) {
-      if (!resultPredicates.anyMatch(s.getResult())) return s.getResult();
-    } else if (outcome instanceof DelegateResult.Failure<R> f) {
-      final var handledException = exceptionPredicates.firstMatchOrEmpty(f.getException()).orElse(null);
-      if (handledException == null) throw f.getException();
-    } else {
-      throw new IllegalStateException("Unexpected value: " + outcome);
+    final var shouldHandle = outcome.shouldHandle(resultPredicates, exceptionPredicates);
+    if (!shouldHandle) {
+      return outcome.getOrThrow();
     }
 
     onFallback.accept(outcome, context);

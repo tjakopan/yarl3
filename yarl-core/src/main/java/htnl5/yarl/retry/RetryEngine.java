@@ -13,14 +13,6 @@ final class RetryEngine {
   private RetryEngine() {
   }
 
-  private static <R> boolean shouldHandleResult(final R result, final ResultPredicates<R> resultPredicates) {
-    return resultPredicates.anyMatch(result);
-  }
-
-  private static boolean shouldHandleException(final Throwable e, final ExceptionPredicates exceptionPredicates) {
-    return exceptionPredicates.firstMatchOrEmpty(e).isPresent();
-  }
-
   static <R> R implementation(final ThrowingFunction<Context, ? extends R> action, final Context context,
                               final ExceptionPredicates exceptionPredicates, final ResultPredicates<R> resultPredicates,
                               final EventListener<RetryEvent<? extends R>> onRetry, final int maxRetryCount,
@@ -29,18 +21,10 @@ final class RetryEngine {
     var tryCount = 0;
 
     while (true) {
-      final var outcome =
-        DelegateResult.runCatching(exceptionPredicates, () -> (R) action.apply(context));
-      if (outcome instanceof DelegateResult.Success<R> s) {
-        if (!shouldHandleResult(s.getResult(), resultPredicates)) {
-          return s.getResult();
-        }
-      } else if (outcome instanceof DelegateResult.Failure<R> f) {
-        if (!shouldHandleException(f.getException(), exceptionPredicates)) {
-          throw f.getException();
-        }
-      } else {
-        throw new IllegalStateException("Unexpected value: " + outcome);
+      final var outcome = DelegateResult.runCatching(exceptionPredicates, () -> (R) action.apply(context));
+      final var shouldHandle = outcome.shouldHandle(resultPredicates, exceptionPredicates);
+      if (!shouldHandle) {
+        return outcome.getOrThrow();
       }
 
       final var canRetry = tryCount < maxRetryCount;
@@ -82,18 +66,11 @@ final class RetryEngine {
                                               final int tryCount) {
     return action.apply(context)
       .exceptionallyCompose(e -> CompletableFuture.failedFuture(exceptionPredicates.firstMatchOrEmpty(e).orElse(e)))
-      .<CompletableFuture<R>>handleAsync((r, e) -> {
+      .handleAsync((r, e) -> {
         final var outcome = DelegateResult.delegateResult(r, e);
-        if (outcome instanceof DelegateResult.Success<R> s) {
-          if (!shouldHandleResult(s.getResult(), resultPredicates)) {
-            return CompletableFuture.completedFuture(s.getResult());
-          }
-        } else if (outcome instanceof DelegateResult.Failure<R> f) {
-          if (!shouldHandleException(f.getException(), exceptionPredicates)) {
-            return CompletableFuture.failedFuture(f.getException());
-          }
-        } else {
-          return CompletableFuture.failedFuture(new IllegalStateException("Unexpected value: " + outcome));
+        final var shouldHandle = outcome.shouldHandle(resultPredicates, exceptionPredicates);
+        if (!shouldHandle) {
+          return outcome.toCompletableFuture();
         }
 
         final var canRetry = tryCount < maxRetryCount;

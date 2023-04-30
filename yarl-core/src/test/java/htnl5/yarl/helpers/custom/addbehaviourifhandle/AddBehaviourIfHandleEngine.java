@@ -16,18 +16,10 @@ final class AddBehaviourIfHandleEngine {
                               final ExceptionPredicates exceptionPredicates, final ResultPredicates<R> resultPredicates,
                               final Consumer<DelegateResult<? extends R>> behaviour) throws Throwable {
     final var outcome = DelegateResult.runCatching(exceptionPredicates, () -> (R) action.apply(context));
-    if (outcome instanceof DelegateResult.Success<R> s) {
-      if (resultPredicates.anyMatch(s.getResult())) {
-        behaviour.accept(outcome);
-      }
-      return s.getResult();
-    } else if (outcome instanceof DelegateResult.Failure<R> f) {
-      final var handledException = exceptionPredicates.firstMatchOrEmpty(f.getException()).orElse(null);
-      if (handledException == null) throw f.getException();
+    final var shouldHandle = outcome.shouldHandle(resultPredicates, exceptionPredicates);
+    if (shouldHandle) {
       behaviour.accept(outcome);
-      throw handledException;
-    } else {
-      throw new IllegalStateException("Unexpected value: " + outcome);
     }
+    return outcome.getOrThrow();
   }
 }

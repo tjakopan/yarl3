@@ -1,8 +1,11 @@
 package htnl5.yarl.helpers.custom.preexecute;
 
-import htnl5.yarl.PolicyBuilderBase;
+import htnl5.yarl.IBuildable;
+import htnl5.yarl.PolicyBuilder;
 
-public final class PreExecutePolicyBuilder<R> extends PolicyBuilderBase<R, PreExecutePolicyBuilder<R>> {
+public final class PreExecutePolicyBuilder<R>
+  extends PolicyBuilder<PreExecutePolicyBuilder<R>>
+  implements IBuildable<PreExecutePolicy<R>> {
   private Runnable preExecute;
 
   Runnable getPreExecute() {
@@ -15,7 +18,7 @@ public final class PreExecutePolicyBuilder<R> extends PolicyBuilderBase<R, PreEx
   }
 
   @Override
-  protected PreExecutePolicyBuilder<R> self() {
+  public PreExecutePolicyBuilder<R> self() {
     return this;
   }
 
