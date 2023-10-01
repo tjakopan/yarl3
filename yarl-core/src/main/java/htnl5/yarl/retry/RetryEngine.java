@@ -51,11 +51,18 @@ final class RetryEngine {
                                                  final int maxRetryCount,
                                                  final SleepDurationProvider<? super R> sleepDurationProvider,
                                                  final SleepExecutorProvider sleepExecutorProvider) {
-    return run(action, context, executor, exceptionPredicates, resultPredicates, onRetry, maxRetryCount,
-      sleepDurationProvider, sleepExecutorProvider, 0);
+    final var future = new CompletableFuture<R>();
+    run(future, action, context, executor, exceptionPredicates, resultPredicates, onRetry, maxRetryCount,
+      sleepDurationProvider, sleepExecutorProvider, 0)
+      .whenComplete((r, e) -> {
+        if (e != null) future.completeExceptionally(e);
+        future.complete(r);
+      });
+    return future;
   }
 
-  private static <R> CompletableFuture<R> run(final Function<Context, ? extends CompletionStage<R>> action,
+  private static <R> CompletableFuture<R> run(final CompletableFuture<R> future,
+                                              final Function<Context, ? extends CompletionStage<R>> action,
                                               final Context context, final Executor executor,
                                               final ExceptionPredicates exceptionPredicates,
                                               final ResultPredicates<R> resultPredicates,
@@ -65,7 +72,9 @@ final class RetryEngine {
                                               final SleepExecutorProvider sleepExecutorProvider,
                                               final int tryCount) {
     return action.apply(context)
-      .exceptionallyCompose(e -> CompletableFuture.failedFuture(exceptionPredicates.firstMatchOrEmpty(e).orElse(e)))
+      .exceptionallyComposeAsync(e ->
+        CompletableFuture.failedFuture(exceptionPredicates.firstMatchOrEmpty(e).orElse(e)), executor)
+      .applyToEitherAsync(future, Function.identity(), executor)
       .handleAsync((r, e) -> {
         final var outcome = DelegateResult.delegateResult(r, e);
         final var shouldHandle = outcome.shouldHandle(resultPredicates, exceptionPredicates);
@@ -83,10 +92,10 @@ final class RetryEngine {
         final var sleepDuration = sleepDurationProvider.apply(new SleepDurationEvent<>(newTryCount, outcome, context));
         return onRetry.apply(new RetryEvent<>(outcome, sleepDuration, newTryCount, context))
           .thenComposeAsync(v -> sleep(sleepDuration, executor, sleepExecutorProvider), executor)
-          .thenComposeAsync(v -> run(action, context, executor, exceptionPredicates, resultPredicates, onRetry,
-            maxRetryCount, sleepDurationProvider, sleepExecutorProvider, newTryCount));
+          .thenComposeAsync(v -> run(future, action, context, executor, exceptionPredicates, resultPredicates, onRetry,
+            maxRetryCount, sleepDurationProvider, sleepExecutorProvider, newTryCount), executor);
       }, executor)
-      .thenCompose(Function.identity())
+      .thenComposeAsync(Function.identity(), executor)
       .toCompletableFuture();
   }
 

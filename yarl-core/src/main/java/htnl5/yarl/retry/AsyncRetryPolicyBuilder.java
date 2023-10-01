@@ -1,9 +1,6 @@
 package htnl5.yarl.retry;
 
-import htnl5.yarl.AsyncEventListener;
-import htnl5.yarl.IAsyncPolicy;
-import htnl5.yarl.IAsyncPolicyBuilder;
-import htnl5.yarl.IBuildable;
+import htnl5.yarl.*;
 
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
@@ -24,6 +21,7 @@ public final class AsyncRetryPolicyBuilder<R>
 
   @Override
   public AsyncRetryPolicyBuilder<R> executor(final Executor executor) {
+    Objects.requireNonNull(executor, "executor must not be null.");
     this.executor = executor;
     return this;
   }
@@ -32,10 +30,18 @@ public final class AsyncRetryPolicyBuilder<R>
     return onRetry;
   }
 
-  public AsyncRetryPolicyBuilder<R> onRetry(final AsyncEventListener<RetryEvent<? extends R>> onRetry) {
-    Objects.requireNonNull(onRetry, "onRetry must not be null.");
+  public AsyncRetryPolicyBuilder<R> onRetryAsync(final AsyncEventListener<RetryEvent<? extends R>> onRetry) {
+    Objects.requireNonNull(onRetry, "onRetryAsync must not be null.");
     this.onRetry = onRetry;
     return this;
+  }
+
+  public AsyncRetryPolicyBuilder<R> onRetry(final EventListener<RetryEvent<? extends R>> onRetry) {
+    Objects.requireNonNull(onRetry, "onRetry must not be null.");
+    return onRetryAsync(ev -> {
+      onRetry.accept(ev);
+      return CompletableFuture.completedFuture(null);
+    });
   }
 
   SleepExecutorProvider getSleepExecutorProvider() {

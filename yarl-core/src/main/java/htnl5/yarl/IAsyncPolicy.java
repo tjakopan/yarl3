@@ -27,8 +27,9 @@ public interface IAsyncPolicy<R> extends IPolicy {
     Objects.requireNonNull(context, "context must not be null.");
     final var priorPolicyKey = context.getPolicyKey().orElse(null);
     context.setPolicyKey(getPolicyKey());
-    return implementation(context, getExecutor(), action)
-      .whenComplete((r, e) -> context.setPolicyKey(priorPolicyKey));
+    final var future = implementation(context, getExecutor(), action);
+    future.whenComplete((r, e) -> context.setPolicyKey(priorPolicyKey));
+    return future;
   }
 
   CompletableFuture<R> implementation(final Context context, final Executor executor,

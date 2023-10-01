@@ -33,7 +33,7 @@ public abstract class RetryPolicyBuilderBase<R, B extends RetryPolicyBuilderBase
   }
 
   public B maxRetryCount(final int maxRetryCount) {
-    if (maxRetryCount < 0) throw new IllegalArgumentException("Retry count must be greater than or equal to zero.");
+    if (maxRetryCount < 0) throw new IllegalArgumentException("maxRetryCount must be greater than or equal to zero.");
     this.maxRetryCount = maxRetryCount;
     return self();
   }

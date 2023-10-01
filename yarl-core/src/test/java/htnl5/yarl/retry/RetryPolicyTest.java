@@ -27,7 +27,7 @@ public class RetryPolicyTest {
         .build());
 
     assertThat(throwable).isInstanceOf(IllegalArgumentException.class)
-      .hasMessageContaining("Retry count");
+      .hasMessageContaining("maxRetryCount");
   }
 
   @Test
