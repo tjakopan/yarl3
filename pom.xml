@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.github.tjakopan.yarl</groupId>
+  <artifactId>yarl-parent</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <modules>
+    <module>yarl-core</module>
+  </modules>
+
+  <properties>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <checkerframework.version>3.48.4</checkerframework.version>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+<!--      <dependency>-->
+<!--        <groupId>org.jspecify</groupId>-->
+<!--        <artifactId>jspecify</artifactId>-->
+<!--        <version>1.0.0</version>-->
+<!--      </dependency>-->
+<!--      <dependency>-->
+<!--        <groupId>org.checkerframework</groupId>-->
+<!--        <artifactId>checker-qual</artifactId>-->
+<!--        <version>${checkerframework.version}</version>-->
+<!--      </dependency>-->
+
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter</artifactId>
+        <version>5.11.4</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-core</artifactId>
+        <version>3.27.2</version>
+        <scope>test</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.13.0</version>
+<!--          <configuration>-->
+<!--            <fork>true</fork> &lt;!&ndash; Must fork or else JVM arguments are ignored. &ndash;&gt;-->
+<!--            <annotationProcessorPaths>-->
+<!--              <path>-->
+<!--                <groupId>org.checkerframework</groupId>-->
+<!--                <artifactId>checker</artifactId>-->
+<!--                <version>${checkerframework.version}</version>-->
+<!--              </path>-->
+<!--            </annotationProcessorPaths>-->
+<!--            <annotationProcessors>-->
+<!--              &lt;!&ndash; Add all the checkers you want to enable here &ndash;&gt;-->
+<!--              <annotationProcessor>org.checkerframework.checker.nullness.NullnessChecker</annotationProcessor>-->
+<!--            </annotationProcessors>-->
+<!--            <compilerArgs combine.children="append">-->
+<!--              <arg>-Xmaxerrs</arg>-->
+<!--              <arg>10000</arg>-->
+<!--              <arg>-Xmaxwarns</arg>-->
+<!--              <arg>10000</arg>-->
+<!--              &lt;!&ndash; <arg>-Awarns</arg> &ndash;&gt; &lt;!&ndash; -Awarns turns type-checking errors into warnings. &ndash;&gt;-->
+<!--              <arg>-J&#45;&#45;add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED</arg>-->
+<!--              <arg>-J&#45;&#45;add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED</arg>-->
+<!--              <arg>-J&#45;&#45;add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED</arg>-->
+<!--              <arg>-J&#45;&#45;add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED</arg>-->
+<!--              <arg>-J&#45;&#45;add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED</arg>-->
+<!--              <arg>-J&#45;&#45;add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED</arg>-->
+<!--              <arg>-J&#45;&#45;add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</arg>-->
+<!--              <arg>-J&#45;&#45;add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED</arg>-->
+<!--              <arg>-J&#45;&#45;add-opens=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED</arg>-->
+<!--            </compilerArgs>-->
+<!--          </configuration>-->
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>3.5.2</version>
+          <configuration>
+            <systemPropertyVariables>
+              <junit.jupiter.testinstance.lifecycle.default>per_class</junit.jupiter.testinstance.lifecycle.default>
+            </systemPropertyVariables>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <version>3.5.2</version>
+          <configuration>
+            <systemPropertyVariables>
+              <junit.jupiter.testinstance.lifecycle.default>per_class</junit.jupiter.testinstance.lifecycle.default>
+            </systemPropertyVariables>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+</project>
